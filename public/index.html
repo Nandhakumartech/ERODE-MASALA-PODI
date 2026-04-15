@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+<meta name="theme-color" content="#8B1A1A">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="format-detection" content="telephone=no">
+<title>AMABAL Masala — Traditional South Indian Spice Blends from Erode</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800;900&family=DM+Sans:wght@300;400;500;600;700&family=Noto+Serif+Tamil:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* ============ RESET & BASE ============ */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --red:#CC1A1A;--deep-red:#8B1A1A;--gold:#D4A056;--saffron:#E8723A;
+  --cream:#FDF6EC;--dark:#1A0A00;--warm-brown:#3D1E0C;
+  --turmeric:#E3A83A;--green:#2D6A27;--light-gold:#F5E6C8;
+  --ered:#D42B2B;--eyel:#F7C948;--egreen:#1B7A3D;
+  --pkt-red:#E03030;--radius:4px;
+  --safe-top:env(safe-area-inset-top,0px);
+  --safe-bottom:env(safe-area-inset-bottom,0px);
+}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;overflow-x:hidden}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--dark);overflow-x:hidden;line-height:1.5;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+img{max-width:100%;height:auto;display:block}
+button,input,select,textarea{font-family:inherit;font-size:inherit}
+button{cursor:pointer;-webkit-tap-highlight-color:transparent}
+a{-webkit-tap-highlight-color:transparent}
+input,select,textarea{-webkit-appearance:none;-moz-appearance:none;appearance:none;border-radius:0}
+/* Touch targets min 44px */
+button,a,.weight-btn,.qty-btn,.add-btn{min-height:44px}
+
+/* ============ PRELOADER ============ */
+.preloader{position:fixed;inset:0;z-index:9999;background:var(--deep-red);display:flex;align-items:center;justify-content:center;flex-direction:column;transition:opacity .7s,visibility .7s}
+.preloader.hide{opacity:0;visibility:hidden;pointer-events:none}
+.pl-icon{font-size:clamp(2.5rem,5vw,3.5rem);animation:plBounce 1s infinite}
+@keyframes plBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-15px)}}
+.pl-name{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,4vw,2.8rem);color:var(--eyel);letter-spacing:.1em;font-weight:900;margin-top:12px}
+.pl-sub{color:var(--light-gold);font-size:clamp(.65rem,1.5vw,.8rem);margin-top:6px;letter-spacing:.3em;text-transform:uppercase;opacity:.7}
+.pl-bar{width:min(200px,60vw);height:3px;background:rgba(255,255,255,.15);margin-top:20px;border-radius:2px;overflow:hidden}
+.pl-fill{height:100%;width:0;background:var(--eyel);animation:plFill 1.5s ease-in-out forwards}
+@keyframes plFill{to{width:100%}}
+
+/* ============ WELCOME POPUP ============ */
+.wo-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:8000;display:none;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+.wo-overlay.show{display:flex}
+.wo-popup{background:var(--cream);width:100%;max-width:460px;position:relative;animation:woIn .35s ease-out;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.4);max-height:calc(100vh - 32px);max-height:calc(100dvh - 32px);overflow-y:auto;-webkit-overflow-scrolling:touch}
+@keyframes woIn{from{opacity:0;transform:scale(.9) translateY(20px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.wo-close{position:absolute;top:10px;right:12px;background:rgba(0,0,0,.2);border:none;color:#fff;font-size:1.2rem;width:36px;height:36px;display:flex;align-items:center;justify-content:center;z-index:2;border-radius:50%}
+.wo-top{background:linear-gradient(135deg,var(--ered),var(--deep-red));padding:clamp(20px,4vw,36px) clamp(16px,3vw,32px);text-align:center}
+.wo-badge{display:inline-block;background:var(--eyel);color:var(--dark);font-size:clamp(.55rem,1.2vw,.65rem);font-weight:800;letter-spacing:.18em;text-transform:uppercase;padding:5px 14px;margin-bottom:12px}
+.wo-title{font-family:'Playfair Display',serif;font-size:clamp(1.3rem,3vw,2rem);color:#fff;font-weight:900;line-height:1.25}
+.wo-title em{color:var(--eyel);font-style:italic}
+.wo-disc{font-size:clamp(2.8rem,8vw,4.2rem);font-family:'Playfair Display',serif;font-weight:900;color:var(--eyel);margin:6px 0;text-shadow:0 3px 15px rgba(0,0,0,.3)}
+.wo-disc small{font-size:clamp(.8rem,2vw,1.1rem);display:block;color:#fff;font-family:'DM Sans',sans-serif;font-weight:400;letter-spacing:.08em}
+.wo-body{padding:clamp(16px,3vw,28px) clamp(16px,3vw,32px)}
+.wo-code{background:var(--dark);color:var(--eyel);text-align:center;padding:12px;font-family:monospace;font-size:clamp(1rem,2.5vw,1.3rem);letter-spacing:.2em;margin-bottom:14px;border:2px dashed var(--gold);position:relative;min-height:48px;display:flex;align-items:center;justify-content:center;gap:8px}
+.wo-code-hint{font-size:clamp(.55rem,1vw,.65rem);color:var(--gold);font-family:'DM Sans',sans-serif;letter-spacing:.08em}
+.wo-feats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
+.wo-feat{text-align:center;padding:10px 6px;background:var(--light-gold);font-size:clamp(.6rem,1.2vw,.72rem);font-weight:600;color:var(--dark);line-height:1.35}
+.wo-feat span{display:block;font-size:clamp(1.1rem,2.5vw,1.4rem);margin-bottom:3px}
+.wo-btn{width:100%;background:var(--ered);color:#fff;border:none;padding:14px;font-weight:700;font-size:clamp(.78rem,1.5vw,.88rem);letter-spacing:.12em;text-transform:uppercase;transition:background .3s}
+.wo-btn:active{background:var(--deep-red)}
+.wo-timer{text-align:center;margin-top:10px;font-size:.72rem;color:#999}
+.wo-timer b{color:var(--ered);font-size:.85rem}
+
+/* ============ NAV ============ */
+nav{position:fixed;top:0;width:100%;z-index:1000;padding:10px 16px;display:flex;justify-content:space-between;align-items:center;transition:all .35s;padding-top:calc(10px + var(--safe-top))}
+nav.scrolled{background:rgba(26,10,0,.96);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:0 2px 20px rgba(0,0,0,.3)}
+.n-brand{display:flex;align-items:center;gap:10px;text-decoration:none}
+.n-logo{width:clamp(34px,5vw,42px);height:clamp(34px,5vw,42px);background:var(--ered);border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid var(--eyel);font-size:clamp(.9rem,1.5vw,1.2rem);flex-shrink:0}
+.n-text{font-family:'Playfair Display',serif;font-size:clamp(1.1rem,2vw,1.4rem);font-weight:900;color:var(--eyel);line-height:1.2}
+.n-text small{display:block;font-size:clamp(.45rem,.9vw,.55rem);letter-spacing:.2em;color:var(--light-gold);font-family:'DM Sans',sans-serif;font-weight:400;text-transform:uppercase}
+.n-links{display:none;gap:24px;align-items:center}
+.n-links a{color:var(--light-gold);text-decoration:none;font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;font-weight:500;transition:color .3s}
+.n-links a:hover{color:var(--eyel)}
+.n-cart{background:var(--ered);color:#fff;border:none;padding:8px 16px;font-weight:700;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;display:flex;align-items:center;gap:6px;flex-shrink:0}
+.n-cart-count{background:var(--eyel);color:var(--dark);font-size:.6rem;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800}
+.n-menu{display:flex;flex-direction:column;gap:4px;background:none;border:none;padding:8px;min-width:44px;min-height:44px;justify-content:center;align-items:center}
+.n-menu span{width:20px;height:2px;background:var(--eyel);transition:.3s;display:block}
+.n-menu.open span:nth-child(1){transform:rotate(45deg) translate(4px,4px)}
+.n-menu.open span:nth-child(2){opacity:0}
+.n-menu.open span:nth-child(3){transform:rotate(-45deg) translate(4px,-4px)}
+
+/* Mobile nav dropdown */
+.n-mobile{position:fixed;top:0;left:0;right:0;background:rgba(26,10,0,.98);padding:80px 24px 32px;display:none;flex-direction:column;gap:20px;z-index:999;min-height:auto;transform:translateY(-100%);transition:transform .3s}
+.n-mobile.open{display:flex;transform:translateY(0)}
+.n-mobile a{color:var(--light-gold);text-decoration:none;font-size:1rem;letter-spacing:.12em;text-transform:uppercase;font-weight:500;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+.n-mobile a:active{color:var(--eyel)}
+
+/* ============ HERO ============ */
+.hero{min-height:100vh;min-height:100dvh;background:linear-gradient(160deg,var(--dark) 0%,#2D0A00 30%,var(--deep-red) 70%,#4A1212 100%);display:flex;align-items:center;position:relative;overflow:hidden}
+.hero-glow{position:absolute;width:clamp(300px,50vw,600px);height:clamp(300px,50vw,600px);border-radius:50%;background:radial-gradient(circle,rgba(212,160,86,.1) 0%,transparent 70%);top:-10%;right:-10%;pointer-events:none}
+.hero-inner{width:100%;max-width:1400px;margin:0 auto;padding:clamp(100px,15vh,140px) clamp(16px,4vw,60px) clamp(40px,8vh,80px);display:flex;flex-direction:column;gap:clamp(30px,5vw,60px);position:relative;z-index:2}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(212,160,86,.12);border:1px solid rgba(212,160,86,.2);padding:6px 14px;font-size:clamp(.6rem,1.2vw,.72rem);letter-spacing:.25em;text-transform:uppercase;color:var(--eyel);font-weight:600;align-self:flex-start}
+.hero-title{font-family:'Playfair Display',serif;font-size:clamp(2rem,5.5vw,4.2rem);font-weight:900;color:var(--cream);line-height:1.1}
+.hero-title .hl{color:var(--eyel)}
+.hero-title .rd{color:var(--ered)}
+.hero-desc{color:var(--light-gold);font-size:clamp(.88rem,1.5vw,1.05rem);line-height:1.8;max-width:560px;opacity:.8}
+.hero-cta{display:flex;gap:12px;flex-wrap:wrap}
+.btn-p{background:var(--ered);color:#fff;border:none;padding:clamp(12px,1.5vw,16px) clamp(20px,3vw,36px);font-weight:700;font-size:clamp(.75rem,1.3vw,.85rem);letter-spacing:.12em;text-transform:uppercase;transition:all .25s;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+.btn-p:active{background:var(--dark);transform:scale(.98)}
+.btn-o{border:2px solid var(--eyel);color:var(--eyel);background:transparent;padding:clamp(10px,1.3vw,14px) clamp(18px,2.5vw,34px);font-weight:600;font-size:clamp(.75rem,1.3vw,.85rem);letter-spacing:.12em;text-transform:uppercase;transition:all .25s;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+.btn-o:active{background:var(--eyel);color:var(--dark)}
+.hero-trust{display:flex;gap:clamp(12px,2vw,24px);flex-wrap:wrap}
+.hero-trust div{display:flex;align-items:center;gap:5px;color:var(--light-gold);font-size:clamp(.68rem,1.1vw,.78rem);opacity:.65}
+/* Hero packet - only on larger screens */
+.hero-pkt-wrap{display:none}
+
+/* ============ MARQUEE ============ */
+.mq{background:var(--eyel);padding:10px 0;overflow:hidden}
+.mq-track{display:flex;animation:mqScroll 22s linear infinite;white-space:nowrap}
+@keyframes mqScroll{to{transform:translateX(-50%)}}
+.mq-item{font-family:'Playfair Display',serif;font-size:clamp(.7rem,1.2vw,.82rem);font-weight:700;color:var(--dark);padding:0 clamp(16px,2.5vw,36px);display:flex;align-items:center;gap:8px}
+.mq-dot{width:5px;height:5px;background:var(--ered);border-radius:50%;flex-shrink:0}
+
+/* ============ SECTION HEADER ============ */
+.sh{text-align:center;margin-bottom:clamp(32px,5vw,60px);padding:0 16px}
+.sh-tag{font-size:clamp(.6rem,1vw,.7rem);letter-spacing:.35em;text-transform:uppercase;color:var(--ered);font-weight:700;margin-bottom:8px}
+.sh-title{font-family:'Playfair Display',serif;font-size:clamp(1.6rem,3.5vw,2.8rem);font-weight:900;color:var(--dark);line-height:1.2}
+.sh-line{width:40px;height:3px;background:var(--ered);margin:12px auto 0}
+.sh-sub{font-size:clamp(.78rem,1.3vw,.9rem);color:#888;margin-top:10px;max-width:500px;margin-left:auto;margin-right:auto;line-height:1.6}
+
+/* ============ PRODUCTS + BILL ============ */
+.prod-section{padding:clamp(60px,8vw,100px) 0}
+.prod-layout{max-width:1400px;margin:0 auto;padding:0 clamp(12px,2vw,40px);display:flex;flex-direction:column;gap:24px}
+.prod-list{display:flex;flex-direction:column;gap:clamp(16px,2vw,24px)}
+
+/* Product Card */
+.pc{background:#fff;border:1px solid rgba(0,0,0,.06);display:flex;flex-direction:column;overflow:hidden;transition:box-shadow .3s;position:relative}
+.pc.active{border:2px solid var(--ered);box-shadow:0 8px 30px rgba(139,26,26,.12)}
+.pc-img{background:linear-gradient(135deg,var(--ered),#C42020);display:flex;align-items:center;justify-content:center;position:relative;height:clamp(160px,25vw,260px);overflow:hidden}
+.pc-img::before{content:'';position:absolute;inset:6px;border:1px solid rgba(255,255,255,.1);pointer-events:none}
+.pc-bowl{width:clamp(80px,15vw,130px);height:clamp(80px,15vw,130px);border-radius:50%;background:radial-gradient(circle at 35% 30%,#D4873A,#A85C1A,#6E3510);box-shadow:inset 0 -12px 25px rgba(0,0,0,.3),0 6px 16px rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;font-size:clamp(2rem,4vw,3rem);position:relative}
+.pc-bowl::before{content:'';position:absolute;top:10px;left:14px;width:clamp(20px,4vw,35px);height:clamp(12px,2.5vw,20px);background:rgba(255,255,255,.12);border-radius:50%;transform:rotate(-25deg)}
+.pc-badge{position:absolute;top:10px;left:10px;background:var(--eyel);color:var(--dark);font-size:clamp(.55rem,1vw,.62rem);font-weight:800;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;white-space:nowrap}
+.pc-veg{position:absolute;top:10px;right:10px;width:18px;height:18px;border:2px solid var(--egreen);display:flex;align-items:center;justify-content:center}
+.pc-veg i{width:7px;height:7px;border-radius:50%;background:var(--egreen)}
+.pc-info{padding:clamp(14px,2.5vw,24px);display:flex;flex-direction:column;gap:clamp(8px,1.5vw,14px)}
+.pc-name{font-family:'Playfair Display',serif;font-size:clamp(1.1rem,2vw,1.35rem);font-weight:800;color:var(--dark)}
+.pc-tamil{font-family:'Noto Serif Tamil',serif;font-size:clamp(.7rem,1.2vw,.8rem);color:var(--ered);opacity:.65}
+.pc-desc{font-size:clamp(.76rem,1.2vw,.84rem);color:#777;line-height:1.6}
+.pc-weights{display:flex;flex-wrap:wrap;gap:clamp(6px,1vw,8px)}
+.wt-btn{padding:clamp(8px,1vw,10px) clamp(10px,1.5vw,14px);border:1.5px solid #ddd;background:#fff;font-size:clamp(.7rem,1.1vw,.78rem);font-weight:600;transition:all .2s;color:var(--dark);display:flex;flex-direction:column;align-items:center;gap:1px;min-width:clamp(58px,10vw,72px)}
+.wt-btn:active,.wt-btn.sel{background:var(--ered);color:#fff;border-color:var(--ered)}
+.wt-btn small{font-size:clamp(.58rem,.9vw,.65rem);font-weight:400;opacity:.7}
+.pc-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.qty-c{display:flex;align-items:center;border:1.5px solid #ddd;flex-shrink:0}
+.q-btn{width:clamp(36px,5vw,44px);height:clamp(36px,5vw,44px);background:#fff;border:none;font-size:1.1rem;font-weight:700;color:var(--dark);display:flex;align-items:center;justify-content:center}
+.q-btn:active{background:var(--light-gold)}
+.q-val{width:clamp(32px,4vw,40px);text-align:center;font-weight:700;font-size:.88rem;border:none;background:transparent;color:var(--dark)}
+.add-btn{flex:1;background:var(--ered);color:#fff;border:none;padding:10px 16px;font-weight:700;font-size:clamp(.7rem,1.1vw,.78rem);letter-spacing:.08em;text-transform:uppercase;display:flex;align-items:center;justify-content:center;gap:5px;transition:background .2s;min-width:120px}
+.add-btn:active{background:var(--dark)}
+
+/* ============ BILL PANE ============ */
+.bill{background:#fff;border:2px solid var(--ered);overflow:hidden}
+.bill-hd{background:var(--ered);color:#fff;padding:clamp(12px,2vw,16px) clamp(14px,2vw,20px);display:flex;align-items:center;gap:8px}
+.bill-hd h3{font-family:'Playfair Display',serif;font-size:clamp(1rem,1.8vw,1.2rem);font-weight:800}
+.bill-hd-count{margin-left:auto;font-size:.68rem;opacity:.7}
+.bill-items{padding:clamp(12px,2vw,18px);max-height:clamp(200px,30vh,400px);overflow-y:auto;-webkit-overflow-scrolling:touch}
+.bill-empty{text-align:center;padding:clamp(24px,4vw,40px) 16px;color:#bbb}
+.bill-empty-icon{font-size:clamp(2rem,4vw,3rem);margin-bottom:10px;opacity:.4}
+.bill-empty p{font-size:clamp(.75rem,1.2vw,.85rem)}
+.bi{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px dashed rgba(0,0,0,.07)}
+.bi:last-child{border-bottom:none}
+.bi-name{font-weight:700;font-size:clamp(.78rem,1.2vw,.85rem);color:var(--dark)}
+.bi-detail{font-size:clamp(.65rem,1vw,.72rem);color:#999;margin-top:2px}
+.bi-price{font-family:'Playfair Display',serif;font-size:clamp(.95rem,1.5vw,1.1rem);font-weight:800;color:var(--deep-red);white-space:nowrap;margin-left:12px}
+.bi-rm{background:none;border:none;color:#ccc;font-size:.65rem;cursor:pointer;text-decoration:underline;margin-top:3px;min-height:28px;padding:4px 0}
+.bi-rm:active{color:var(--ered)}
+.bill-coupon{padding:clamp(10px,1.5vw,14px) clamp(12px,2vw,18px);border-top:1px solid rgba(0,0,0,.05);display:flex;gap:6px}
+.bill-coupon input{flex:1;border:1.5px solid #ddd;padding:10px;font-size:clamp(.78rem,1.2vw,.85rem);outline:none;min-width:0}
+.bill-coupon input:focus{border-color:var(--ered)}
+.bill-coupon button{background:var(--eyel);color:var(--dark);border:none;padding:10px 14px;font-weight:700;font-size:clamp(.65rem,1vw,.72rem);letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}
+.bill-div{height:2px;background:repeating-linear-gradient(90deg,var(--ered) 0,var(--ered) 6px,transparent 6px,transparent 10px);margin:0 clamp(12px,2vw,18px)}
+.bill-sum{padding:clamp(12px,2vw,18px)}
+.bill-row{display:flex;justify-content:space-between;margin-bottom:6px;font-size:clamp(.78rem,1.2vw,.85rem);color:#666}
+.bill-row.disc{color:var(--egreen);font-weight:600}
+.bill-total{background:var(--ered);margin:0 calc(-1 * clamp(12px,2vw,18px)) calc(-1 * clamp(12px,2vw,18px));padding:clamp(14px,2vw,20px) clamp(14px,2vw,20px);display:flex;justify-content:space-between;align-items:center}
+.bill-total-lbl{color:rgba(255,255,255,.8);font-size:clamp(.72rem,1.1vw,.82rem);text-transform:uppercase;letter-spacing:.12em;font-weight:600}
+.bill-total-amt{font-family:'Playfair Display',serif;font-size:clamp(1.6rem,3vw,2.2rem);font-weight:900;color:var(--eyel)}
+.bill-cta{width:100%;background:var(--dark);color:var(--eyel);border:none;padding:clamp(14px,2vw,16px);font-weight:700;font-size:clamp(.75rem,1.2vw,.85rem);letter-spacing:.12em;text-transform:uppercase;transition:background .2s}
+.bill-cta:active{background:#000}
+
+/* Mobile sticky cart bar */
+.mobile-cart-bar{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--ered);z-index:900;padding:12px 16px;padding-bottom:calc(12px + var(--safe-bottom));flex-wrap:nowrap;align-items:center;justify-content:space-between;box-shadow:0 -4px 20px rgba(0,0,0,.3)}
+.mcb-info{color:#fff;display:flex;flex-direction:column}
+.mcb-count{font-size:.72rem;opacity:.7}
+.mcb-total{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:900;color:var(--eyel)}
+.mcb-btn{background:var(--eyel);color:var(--dark);border:none;padding:12px 20px;font-weight:700;font-size:.78rem;letter-spacing:.1em;text-transform:uppercase}
+.mcb-btn:active{background:#fff}
+
+/* Bill modal for mobile */
+.bill-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1500;display:none}
+.bill-modal-overlay.show{display:block}
+.bill-modal{position:fixed;bottom:0;left:0;right:0;z-index:1501;background:var(--cream);max-height:85vh;max-height:85dvh;overflow-y:auto;-webkit-overflow-scrolling:touch;transform:translateY(100%);transition:transform .3s;padding-bottom:var(--safe-bottom);border-radius:16px 16px 0 0;display:none}
+.bill-modal.show{display:block;transform:translateY(0)}
+.bill-modal-handle{width:40px;height:4px;background:#ccc;border-radius:2px;margin:10px auto}
+.bill-modal-close{position:absolute;top:12px;right:16px;background:none;border:none;font-size:1.2rem;width:36px;height:36px;display:flex;align-items:center;justify-content:center}
+
+/* ============ DELIVERY ============ */
+.del-section{padding:clamp(40px,6vw,80px) clamp(12px,3vw,40px);max-width:900px;margin:0 auto}
+.del-form{background:#fff;border:1px solid rgba(0,0,0,.06);padding:clamp(16px,3vw,36px);display:grid;grid-template-columns:1fr;gap:clamp(14px,2vw,20px)}
+.df-g{display:flex;flex-direction:column;gap:5px}
+.df-l{font-size:clamp(.65rem,1vw,.72rem);letter-spacing:.12em;text-transform:uppercase;color:var(--dark);font-weight:700}
+.df-l span{color:var(--ered)}
+.df-i,.df-s,.df-t{border:1.5px solid #ddd;padding:clamp(12px,1.5vw,14px) 14px;font-size:clamp(.85rem,1.3vw,.92rem);outline:none;transition:border-color .2s;background:#fff;color:var(--dark);width:100%}
+.df-i:focus,.df-s:focus,.df-t:focus{border-color:var(--ered)}
+.df-t{min-height:70px;resize:vertical}
+.df-i::placeholder{color:#bbb}
+.pin-res{padding:8px 12px;background:var(--light-gold);font-size:clamp(.75rem,1.1vw,.82rem);display:none;margin-top:3px;font-weight:500;border-left:3px solid var(--egreen);line-height:1.5}
+.pin-res.show{display:block}
+.pin-res.err{border-left-color:var(--ered);background:#fff0f0}
+.pin-load{color:var(--ered);font-size:.78rem;display:none;margin-top:3px}
+.order-btn{background:var(--ered);color:#fff;border:none;padding:clamp(14px,2vw,18px);font-weight:700;font-size:clamp(.82rem,1.3vw,.9rem);letter-spacing:.12em;text-transform:uppercase;transition:background .2s;width:100%}
+.order-btn:active{background:var(--dark)}
+
+/* ============ STORY ============ */
+.story{padding:clamp(60px,8vw,100px) clamp(16px,3vw,40px);background:var(--dark);color:var(--cream);position:relative;overflow:hidden}
+.story-inner{max-width:1000px;margin:0 auto}
+.story .sh-tag{color:var(--eyel)}
+.story .sh-title{color:var(--cream)}
+.story-text{color:var(--light-gold);opacity:.75;line-height:1.85;font-size:clamp(.85rem,1.3vw,.95rem);margin-bottom:20px;max-width:700px;margin-left:auto;margin-right:auto;text-align:center}
+.story-stats{display:flex;gap:clamp(20px,4vw,40px);justify-content:center;margin-top:24px;flex-wrap:wrap}
+.st{text-align:center}
+.st-n{font-family:'Playfair Display',serif;font-size:clamp(1.6rem,3vw,2.2rem);font-weight:900;color:var(--eyel)}
+.st-l{font-size:clamp(.55rem,.9vw,.65rem);letter-spacing:.18em;text-transform:uppercase;color:var(--light-gold);opacity:.5;margin-top:3px}
+
+/* ============ PROCESS ============ */
+.proc{padding:clamp(60px,8vw,100px) clamp(16px,3vw,40px);background:var(--light-gold)}
+.proc-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:clamp(14px,2vw,28px);max-width:1000px;margin:clamp(30px,4vw,50px) auto 0}
+.ps{text-align:center;padding:clamp(20px,3vw,28px) clamp(12px,2vw,20px);background:#fff;border:1px solid rgba(0,0,0,.04);position:relative;transition:transform .2s}
+.ps:active{transform:scale(.98)}
+.ps-num{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--ered);color:#fff;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:800}
+.ps-icon{font-size:clamp(1.8rem,3vw,2.5rem);margin:6px 0 10px}
+.ps-title{font-family:'Playfair Display',serif;font-size:clamp(.85rem,1.3vw,1rem);font-weight:700;margin-bottom:4px}
+.ps-desc{font-size:clamp(.7rem,1.1vw,.78rem);color:#777;line-height:1.5}
+
+/* ============ REVIEWS ============ */
+.rev{padding:clamp(60px,8vw,100px) clamp(12px,3vw,40px)}
+.rev-grid{display:grid;grid-template-columns:1fr;gap:clamp(14px,2vw,24px);max-width:1200px;margin:clamp(30px,4vw,50px) auto 0}
+.rc{background:#fff;border:1px solid rgba(0,0,0,.06);overflow:hidden;transition:transform .2s}
+.rc:active{transform:scale(.99)}
+.rc-img{height:clamp(100px,15vw,140px);background:var(--light-gold);display:flex;align-items:center;justify-content:center;font-size:clamp(2rem,4vw,3.5rem)}
+.rc-body{padding:clamp(14px,2.5vw,24px)}
+.rc-stars{color:var(--turmeric);font-size:clamp(.8rem,1.2vw,.9rem);letter-spacing:2px;margin-bottom:8px}
+.rc-text{font-size:clamp(.78rem,1.2vw,.85rem);line-height:1.65;color:#555;margin-bottom:12px;font-style:italic}
+.rc-author{display:flex;align-items:center;gap:8px}
+.rc-av{width:clamp(30px,4vw,36px);height:clamp(30px,4vw,36px);border-radius:50%;background:var(--ered);display:flex;align-items:center;justify-content:center;color:#fff;font-size:clamp(.65rem,1vw,.78rem);font-weight:700;flex-shrink:0}
+.rc-name{font-weight:700;font-size:clamp(.75rem,1.1vw,.82rem)}
+.rc-loc{font-size:clamp(.65rem,1vw,.72rem);color:#999}
+
+/* ============ FOOTER ============ */
+footer{background:var(--dark);padding:clamp(40px,6vw,60px) clamp(16px,3vw,40px) clamp(16px,3vw,24px);color:var(--light-gold)}
+.ft-inner{max-width:1400px;margin:0 auto;display:grid;grid-template-columns:1fr;gap:clamp(24px,4vw,40px)}
+.ft-brand{font-family:'Playfair Display',serif;font-size:clamp(1.2rem,2vw,1.6rem);font-weight:900;color:var(--eyel);margin-bottom:8px}
+.ft-tag{font-size:clamp(.75rem,1.1vw,.82rem);opacity:.45;line-height:1.7;max-width:300px}
+.ft-title{font-size:clamp(.6rem,1vw,.7rem);letter-spacing:.18em;text-transform:uppercase;color:var(--eyel);font-weight:700;margin-bottom:12px}
+.ft-links{list-style:none;display:flex;flex-direction:column;gap:8px}
+.ft-links a{color:var(--light-gold);text-decoration:none;font-size:clamp(.75rem,1.1vw,.82rem);opacity:.45}
+.ft-links a:active{opacity:1;color:var(--eyel)}
+.ft-contact{font-size:clamp(.75rem,1.1vw,.82rem);opacity:.45;line-height:2}
+.ft-bottom{max-width:1400px;margin:clamp(16px,3vw,24px) auto 0;padding-top:clamp(12px,2vw,18px);border-top:1px solid rgba(255,255,255,.06);display:flex;flex-direction:column;gap:4px;font-size:clamp(.6rem,1vw,.72rem);opacity:.3;text-align:center}
+
+/* ============ SUCCESS MODAL ============ */
+.sm-overlay{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:6000;display:none;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+.sm-overlay.show{display:flex}
+.sm{background:var(--cream);max-width:440px;width:100%;padding:clamp(24px,4vw,40px);position:relative;animation:woIn .3s ease-out;text-align:center;max-height:calc(100vh - 32px);overflow-y:auto}
+.sm-close{position:absolute;top:10px;right:12px;background:none;border:none;font-size:1.2rem;width:36px;height:36px;display:flex;align-items:center;justify-content:center}
+.sm-check{font-size:clamp(2.5rem,5vw,3.5rem);margin-bottom:10px}
+.sm h2{font-family:'Playfair Display',serif;font-size:clamp(1.2rem,2.5vw,1.6rem);color:var(--egreen)}
+.sm-steps{background:var(--light-gold);padding:clamp(14px,2vw,20px);text-align:left;font-size:clamp(.75rem,1.2vw,.82rem);line-height:2;margin-top:14px}
+
+/* ============ TOAST ============ */
+.toast{position:fixed;bottom:clamp(70px,10vh,24px);left:50%;transform:translateX(-50%) translateY(100px);background:var(--egreen);color:#fff;padding:12px clamp(16px,3vw,24px);font-size:clamp(.78rem,1.2vw,.85rem);font-weight:600;z-index:7000;transition:transform .35s;display:flex;align-items:center;gap:8px;box-shadow:0 6px 24px rgba(0,0,0,.25);max-width:calc(100vw - 32px);text-align:center;white-space:nowrap}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+/* ============ SCROLL REVEAL ============ */
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .5s,transform .5s}
+.reveal.vis{opacity:1;transform:translateY(0)}
+
+/* ============ RESPONSIVE: TABLET ============ */
+@media(min-width:600px){
+  .del-form{grid-template-columns:1fr 1fr}
+  .df-g.full{grid-column:1/-1}
+  .rev-grid{grid-template-columns:repeat(2,1fr)}
+  .ft-inner{grid-template-columns:2fr 1fr 1fr}
+  .ft-bottom{flex-direction:row;justify-content:space-between;text-align:left}
+  .pc{flex-direction:row}
+  .pc-img{width:clamp(180px,25vw,220px);min-height:auto;flex-shrink:0}
+}
+
+/* ============ RESPONSIVE: DESKTOP ============ */
+@media(min-width:1024px){
+  .n-links{display:flex}
+  .n-menu{display:none}
+  .hero-inner{flex-direction:row;align-items:center}
+  .hero-pkt-wrap{display:flex;justify-content:center;align-items:center;flex:0 0 380px}
+  .hero-pkt{width:280px;height:370px;background:linear-gradient(180deg,var(--ered) 0%,#B81C1C 100%);border-radius:6px;position:relative;overflow:hidden;box-shadow:0 25px 50px rgba(0,0,0,.4);transform:perspective(600px) rotateY(-6deg);transition:transform .5s}
+  .hero-pkt:hover{transform:perspective(600px) rotateY(0)}
+  .hp-gold{position:absolute;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,var(--eyel),transparent)}
+  .hp-g1{top:55px}.hp-g2{top:63px}
+  .hp-hd{text-align:center;padding:14px 16px 6px;position:relative;z-index:2}
+  .hp-brand{font-size:.52rem;letter-spacing:.2em;color:rgba(255,255,255,.65);text-transform:uppercase}
+  .hp-name{font-family:'Playfair Display',serif;font-size:1.7rem;font-weight:900;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.3);margin-top:2px}
+  .hp-body{display:flex;justify-content:center;padding:20px}
+  .hp-bowl{width:140px;height:140px;border-radius:50%;background:radial-gradient(circle at 38% 32%,#D4873A,#A85C1A,#7A3E0A);box-shadow:inset 0 -16px 32px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;font-size:2.5rem;position:relative}
+  .hp-bowl::before{content:'';position:absolute;top:12px;left:20px;width:40px;height:24px;background:rgba(255,255,255,.12);border-radius:50%;transform:rotate(-25deg)}
+  .hp-veg{position:absolute;top:12px;right:12px;width:20px;height:20px;border:2px solid var(--egreen);display:flex;align-items:center;justify-content:center}
+  .hp-veg i{width:8px;height:8px;border-radius:50%;background:var(--egreen)}
+  .hp-ft{text-align:center;padding:10px 16px}
+  .hp-tl{font-size:.58rem;letter-spacing:.12em;color:rgba(255,255,255,.75);text-transform:uppercase}
+  .hp-tamil{font-family:'Noto Serif Tamil',serif;font-size:.78rem;color:var(--eyel);opacity:.75;margin-top:2px}
+  .hp-wt{position:absolute;bottom:14px;right:14px;background:var(--eyel);color:var(--dark);font-weight:800;font-size:.62rem;padding:3px 8px}
+
+  .prod-layout{flex-direction:row;align-items:flex-start;gap:32px}
+  .prod-list{flex:1}
+  .bill{position:sticky;top:80px;flex:0 0 clamp(320px,28vw,380px)}
+  .mobile-cart-bar{display:none !important}
+
+  .proc-grid{grid-template-columns:repeat(4,1fr)}
+  .rev-grid{grid-template-columns:repeat(3,1fr)}
+  .ft-inner{grid-template-columns:2fr 1fr 1fr 1.2fr}
+}
+
+/* ============ MOBILE: show bottom bar, hide desktop bill ============ */
+@media(max-width:1023px){
+  .bill{display:none}
+  .mobile-cart-bar.has-items{display:flex}
+  .toast{bottom:clamp(80px,12vh,90px)}
+}
+</style>
+</head>
+<body>
+
+<!-- PRELOADER -->
+<div class="preloader" id="preloader">
+  <div class="pl-icon">🌶️</div>
+  <div class="pl-name">AMABAL</div>
+  <div class="pl-sub">Traditional Masala Powders • Erode</div>
+  <div class="pl-bar"><div class="pl-fill"></div></div>
+</div>
+
+<!-- WELCOME POPUP -->
+<div class="wo-overlay" id="woPop">
+  <div class="wo-popup">
+    <button class="wo-close" onclick="closeWo()">✕</button>
+    <div class="wo-top">
+      <div class="wo-badge">🎉 Welcome Offer — Limited Time</div>
+      <div class="wo-title">Get <em>Flat Discount</em> on Your First Order!</div>
+      <div class="wo-disc">15% OFF<small>on all masala podis</small></div>
+    </div>
+    <div class="wo-body">
+      <div class="wo-code" onclick="copyCoupon()">AMABAL15 <span class="wo-code-hint">Tap to Copy</span></div>
+      <div class="wo-feats">
+        <div class="wo-feat"><span>🚚</span>Free Delivery<br>Over ₹499</div>
+        <div class="wo-feat"><span>🌿</span>100% Natural<br>No Chemicals</div>
+        <div class="wo-feat"><span>📦</span>Ships in<br>24 Hours</div>
+      </div>
+      <button class="wo-btn" onclick="closeWo()">🛒 SHOP NOW & SAVE 15%</button>
+      <div class="wo-timer">Offer expires in <b id="woTime">23:59:59</b></div>
+    </div>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="#" class="n-brand">
+    <div class="n-logo">🪔</div>
+    <div class="n-text">AMABAL<small>Masala • Erode</small></div>
+  </a>
+  <div class="n-links">
+    <a href="#products">Products</a>
+    <a href="#story">Our Story</a>
+    <a href="#reviews">Reviews</a>
+    <a href="#delivery">Order</a>
+    <button class="n-cart" onclick="scrollTo('#products')">🛒 <span class="n-cart-count" id="navCount">0</span></button>
+  </div>
+  <button class="n-menu" id="nMenu" onclick="toggleNav()"><span></span><span></span><span></span></button>
+</nav>
+<div class="n-mobile" id="nMobile">
+  <a href="#products" onclick="closeNav()">Products</a>
+  <a href="#story" onclick="closeNav()">Our Story</a>
+  <a href="#reviews" onclick="closeNav()">Reviews</a>
+  <a href="#delivery" onclick="closeNav()">Order Now</a>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-inner">
+    <div style="flex:1">
+      <div class="hero-badge">📍 Proudly from Erode, Tamil Nadu</div>
+      <h1 class="hero-title">The Authentic<br><span class="hl">Tamil Kitchen</span><br>Masala <span class="rd">Podi</span></h1>
+      <p class="hero-desc">Four signature masala podis handcrafted from ancestral Erode recipes. Stone-ground, zero preservatives — pure bold flavours.</p>
+      <div class="hero-cta">
+        <a href="#products" class="btn-p">🛒 Order Now</a>
+        <a href="#story" class="btn-o">📖 Our Story</a>
+      </div>
+      <div class="hero-trust">
+        <div><span>🌿</span> 100% Natural</div>
+        <div><span>🏭</span> Made in Erode</div>
+        <div><span>🚚</span> All India Delivery</div>
+      </div>
+    </div>
+    <!-- Desktop only packet -->
+    <div class="hero-pkt-wrap">
+      <div class="hero-pkt">
+        <div class="hp-hd"><div class="hp-brand">AMABAL • TRADITIONAL SPICE BLEND</div><div class="hp-name">Murungai Podi</div></div>
+        <div class="hp-gold hp-g1"></div><div class="hp-gold hp-g2"></div>
+        <div class="hp-body"><div class="hp-bowl">🌿</div></div>
+        <div class="hp-veg"><i></i></div>
+        <div class="hp-ft"><div class="hp-tl">Authentic South Indian Spice Blend</div><div class="hp-tamil">ஆமாபால் முருங்கை பொடி</div></div>
+        <div class="hp-wt">100g</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="mq"><div class="mq-track" id="mq"></div></div>
+
+<!-- PRODUCTS + BILL -->
+<section class="prod-section" id="products">
+  <div class="sh reveal">
+    <div class="sh-tag">✦ Our Signature Collection ✦</div>
+    <h2 class="sh-title">Choose Your Masala Podi</h2>
+    <div class="sh-line"></div>
+    <p class="sh-sub">Select weight & quantity, then add to order. Bill updates live!</p>
+  </div>
+  <div class="prod-layout">
+    <div class="prod-list" id="pGrid"></div>
+    <!-- Desktop Bill Pane -->
+    <div class="bill" id="billDesktop">
+      <div class="bill-hd"><span style="font-size:1.2rem">🧾</span><h3>Your Order</h3><span class="bill-hd-count" id="bdCount">0 items</span></div>
+      <div class="bill-items" id="bdItems"><div class="bill-empty" id="bdEmpty"><div class="bill-empty-icon">🧺</div><p>Add products to see bill</p></div></div>
+      <div id="bdSumWrap" style="display:none">
+        <div class="bill-coupon"><input type="text" placeholder="Coupon code..." id="bdCoupon" value="AMABAL15"><button onclick="applyCoupon()">Apply</button></div>
+        <div class="bill-div"></div>
+        <div class="bill-sum">
+          <div class="bill-row"><span>Subtotal</span><span id="bdSub">₹0</span></div>
+          <div class="bill-row disc" id="bdDiscR" style="display:none"><span>Discount (15%)</span><span id="bdDisc">-₹0</span></div>
+          <div class="bill-row"><span>Delivery</span><span id="bdDel">₹49</span></div>
+          <div class="bill-total"><div class="bill-total-lbl">Total</div><div class="bill-total-amt" id="bdTotal">₹0</div></div>
+        </div>
+        <button class="bill-cta" onclick="goTo('#delivery')">📦 PROCEED TO DELIVERY →</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MOBILE CART BAR -->
+<div class="mobile-cart-bar" id="mcb">
+  <div class="mcb-info"><span class="mcb-count" id="mcbCount">0 items</span><span class="mcb-total" id="mcbTotal">₹0</span></div>
+  <button class="mcb-btn" onclick="openBillModal()">VIEW CART →</button>
+</div>
+
+<!-- MOBILE BILL MODAL -->
+<div class="bill-modal-overlay" id="bmOverlay" onclick="closeBillModal()"></div>
+<div class="bill-modal" id="bmModal">
+  <div class="bill-modal-handle"></div>
+  <button class="bill-modal-close" onclick="closeBillModal()">✕</button>
+  <div class="bill-hd"><span style="font-size:1.1rem">🧾</span><h3>Your Order</h3><span class="bill-hd-count" id="bmCount">0 items</span></div>
+  <div class="bill-items" id="bmItems"></div>
+  <div id="bmSumWrap" style="display:none">
+    <div class="bill-coupon"><input type="text" placeholder="Coupon..." id="bmCoupon" value="AMABAL15"><button onclick="applyCoupon()">Apply</button></div>
+    <div class="bill-div"></div>
+    <div class="bill-sum">
+      <div class="bill-row"><span>Subtotal</span><span id="bmSub">₹0</span></div>
+      <div class="bill-row disc" id="bmDiscR" style="display:none"><span>Discount (15%)</span><span id="bmDisc">-₹0</span></div>
+      <div class="bill-row"><span>Delivery</span><span id="bmDel">₹49</span></div>
+      <div class="bill-total"><div class="bill-total-lbl">Total</div><div class="bill-total-amt" id="bmTotal">₹0</div></div>
+    </div>
+    <button class="bill-cta" onclick="closeBillModal();goTo('#delivery')">📦 PROCEED TO DELIVERY →</button>
+  </div>
+</div>
+
+<!-- DELIVERY -->
+<section class="del-section" id="delivery">
+  <div class="sh reveal">
+    <div class="sh-tag">📦 Delivery Details</div>
+    <h2 class="sh-title">Where To Deliver?</h2>
+    <div class="sh-line"></div>
+  </div>
+  <div class="del-form reveal">
+    <div class="df-g"><label class="df-l">Full Name <span>*</span></label><input class="df-i" type="text" placeholder="Your name" id="dName"></div>
+    <div class="df-g"><label class="df-l">Phone <span>*</span></label><input class="df-i" type="tel" placeholder="+91 XXXXX XXXXX" id="dPhone" inputmode="tel"></div>
+    <div class="df-g"><label class="df-l">Email <span>*</span></label><input class="df-i" type="email" placeholder="your@email.com" id="dEmail" inputmode="email"></div>
+    <div class="df-g">
+      <label class="df-l">Pincode <span>*</span></label>
+      <input class="df-i" type="text" placeholder="6-digit pincode" id="dPin" maxlength="6" inputmode="numeric" pattern="[0-9]*" oninput="lookupPin(this.value)">
+      <div class="pin-load" id="pinLoad">🔍 Looking up...</div>
+      <div class="pin-res" id="pinRes"></div>
+    </div>
+    <div class="df-g"><label class="df-l">Village / City</label><input class="df-i" type="text" placeholder="Auto-fills from pincode" id="dVillage"></div>
+    <div class="df-g"><label class="df-l">District</label><input class="df-i" type="text" placeholder="Auto-fills from pincode" id="dDist"></div>
+    <div class="df-g full"><label class="df-l">Full Address <span>*</span></label><textarea class="df-t" placeholder="House no, street, landmark, pincode..." id="dAddr"></textarea></div>
+    <div class="df-g full"><button class="order-btn" onclick="placeOrder()">✅ PLACE ORDER — GET PAYMENT LINK</button></div>
+  </div>
+</section>
+
+<!-- STORY -->
+<section class="story" id="story">
+  <div class="story-inner">
+    <div class="sh reveal"><div class="sh-tag">Our Heritage</div><h2 class="sh-title">Born in Erode, Ground with Love</h2><div class="sh-line" style="background:var(--eyel)"></div></div>
+    <p class="story-text reveal">Amabal Masala was born in a humble Erode kitchen — the turmeric capital of the world. Generations of women perfected the art of spice blending on traditional stone grinders. Every podi we make honours that legacy — zero chemicals, zero shortcuts.</p>
+    <p class="story-text reveal">Our Murungai Podi, the crown jewel, blends nutrient-rich drumstick leaves with a secret Erode spice mix perfected over decades.</p>
+    <div class="story-stats reveal">
+      <div class="st"><div class="st-n">4</div><div class="st-l">Signature Podis</div></div>
+      <div class="st"><div class="st-n">100%</div><div class="st-l">Natural</div></div>
+      <div class="st"><div class="st-n">0</div><div class="st-l">Preservatives</div></div>
+      <div class="st"><div class="st-n">500+</div><div class="st-l">Happy Families</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section class="proc">
+  <div class="sh reveal"><div class="sh-tag">How It Works</div><h2 class="sh-title">Order to Doorstep</h2><div class="sh-line"></div></div>
+  <div class="proc-grid">
+    <div class="ps reveal"><div class="ps-num">1</div><div class="ps-icon">🛒</div><div class="ps-title">Choose & Add</div><div class="ps-desc">Pick podis, select weight, set quantity</div></div>
+    <div class="ps reveal"><div class="ps-num">2</div><div class="ps-icon">💳</div><div class="ps-title">Pay Securely</div><div class="ps-desc">UPI, cards, net banking via Razorpay</div></div>
+    <div class="ps reveal"><div class="ps-num">3</div><div class="ps-icon">📦</div><div class="ps-title">Track Live</div><div class="ps-desc">SMS, Email & WhatsApp updates</div></div>
+    <div class="ps reveal"><div class="ps-num">4</div><div class="ps-icon">⭐</div><div class="ps-title">Rate & Review</div><div class="ps-desc">Share photo + text feedback on site</div></div>
+  </div>
+</section>
+
+<!-- REVIEWS -->
+<section class="rev" id="reviews">
+  <div class="sh reveal"><div class="sh-tag">❤️ Customer Love</div><h2 class="sh-title">What People Say</h2><div class="sh-line"></div></div>
+  <div class="rev-grid" id="revGrid"></div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="ft-inner">
+    <div><div class="ft-brand">AMABAL MASALA</div><p class="ft-tag">Handcrafted masala powders from Erode, Tamil Nadu. Stone-ground with ancestral recipes.</p></div>
+    <div><div class="ft-title">Products</div><ul class="ft-links"><li><a href="#">Murungai Podi</a></li><li><a href="#">Puli Podi</a></li><li><a href="#">Ellu Podi</a></li><li><a href="#">Curry Leaf Podi</a></li></ul></div>
+    <div><div class="ft-title">Quick Links</div><ul class="ft-links"><li><a href="#">Track Order</a></li><li><a href="#">Reviews</a></li><li><a href="#">Contact</a></li><li><a href="#">Admin</a></li></ul></div>
+    <div><div class="ft-title">Contact</div><div class="ft-contact">📍 Erode, Tamil Nadu<br>📞 +91 98765 43210<br>📧 orders@amabalmasala.com</div></div>
+  </div>
+  <div class="ft-bottom"><span>© 2026 Amabal Masala</span><span>Made with ❤️ in Erode</span></div>
+</footer>
+
+<!-- SUCCESS MODAL -->
+<div class="sm-overlay" id="smOv">
+  <div class="sm">
+    <button class="sm-close" onclick="closeSm()">✕</button>
+    <div class="sm-check">✅</div>
+    <h2>Order Placed!</h2>
+    <p style="color:#555;font-size:clamp(.8rem,1.2vw,.9rem);margin-top:6px">Order #<b id="ordId">AMB-00000</b></p>
+    <div class="sm-steps"><strong>What happens next:</strong><br>📱 Payment link via SMS & WhatsApp<br>📧 Confirmation email<br>📦 Dispatch in 24hrs<br>🚚 Live tracking link<br>⭐ Feedback request after delivery</div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+/* ===== DATA ===== */
+const P=[
+  {id:'murungai',name:'Murungai Podi',tamil:'முருங்கை பொடி',desc:'Drumstick leaf powder with aromatic Erode spices. Perfect with hot rice & ghee.',badge:'🔥 Bestseller',emoji:'🌿',col:'#2D6A27',wts:[{g:'50g',p:89},{g:'100g',p:149},{g:'200g',p:269},{g:'500g',p:599}]},
+  {id:'puli',name:'Puli Podi',tamil:'புளி பொடி',desc:'Tangy tamarind spice powder with chillies & curry leaves. For curd rice, idli & dosa.',badge:'😋 Tangy Fav',emoji:'🫙',col:'#C4601A',wts:[{g:'50g',p:79},{g:'100g',p:129},{g:'200g',p:239},{g:'500g',p:529}]},
+  {id:'ellu',name:'Ellu Podi',tamil:'எள்ளு பொடி',desc:'Toasted sesame with dry chillies & garlic. Rich in calcium, nutty & flavourful.',badge:'💪 Calcium Rich',emoji:'✨',col:'#A85C1A',wts:[{g:'50g',p:85},{g:'100g',p:139},{g:'200g',p:249},{g:'500g',p:559}]},
+  {id:'curry',name:'Curry Leaf Podi',tamil:'கறிவேப்பிலை பொடி',desc:'Fragrant curry leaves with urad dal & spices. Everyday Tamil kitchen essential.',badge:'🍃 Daily Must',emoji:'🍃',col:'#1B7A3D',wts:[{g:'50g',p:69},{g:'100g',p:119},{g:'200g',p:219},{g:'500g',p:489}]}
+];
+const R=[
+  {n:'Priya Lakshmi',l:'Chennai',s:5,t:'"Murungai Podi tastes exactly like what my grandmother made in Erode!"',i:'PL',img:'🍚'},
+  {n:'Karthik Rajan',l:'Coimbatore',s:5,t:'"Ordered all 4 podis — Ellu Podi with hot rice is divine. Already reordered!"',i:'KR',img:'🌶️'},
+  {n:'Meena S.',l:'Tiruppur',s:5,t:'"Fresh, aromatic, chemical-free. You can taste the quality difference."',i:'MS',img:'🍃'},
+  {n:'Ganesh Kumar',l:'Erode',s:5,t:'"Being from Erode, I vouch this is the real deal. Puli Podi is unbeatable!"',i:'GK',img:'🫙'},
+  {n:'Revathi M.',l:'Madurai',s:5,t:'"My kids now ask for Murungai Podi rice every day! Nutrition made delicious."',i:'RM',img:'👨‍👩‍👧‍👦'},
+  {n:'Senthil Vel',l:'Salem',s:5,t:'"Fast delivery, great packaging, outstanding taste. 10/10 recommend!"',i:'SV',img:'📦'}
+];
+
+/* ===== STATE ===== */
+let cart=[],selWt={},qty={},coupon=false;
+P.forEach(p=>{selWt[p.id]=1;qty[p.id]=1});
+
+/* ===== RENDER ===== */
+function renderP(){
+  document.getElementById('pGrid').innerHTML=P.map(p=>`
+    <div class="pc reveal" id="c-${p.id}">
+      <div class="pc-img" style="background:linear-gradient(135deg,${p.col},${p.col}dd)">
+        <div class="pc-badge">${p.badge}</div><div class="pc-veg"><i></i></div>
+        <div class="pc-bowl">${p.emoji}</div>
+      </div>
+      <div class="pc-info">
+        <div><div class="pc-name">${p.name}</div><div class="pc-tamil">${p.tamil}</div><div class="pc-desc">${p.desc}</div></div>
+        <div>
+          <div class="pc-weights" id="w-${p.id}">${p.wts.map((w,i)=>`<button class="wt-btn${i===selWt[p.id]?' sel':''}" onclick="selW('${p.id}',${i})">${w.g}<small>₹${w.p}</small></button>`).join('')}</div>
+          <div class="pc-actions">
+            <div class="qty-c"><button class="q-btn" onclick="chgQ('${p.id}',-1)">−</button><span class="q-val" id="q-${p.id}">${qty[p.id]}</span><button class="q-btn" onclick="chgQ('${p.id}',1)">+</button></div>
+            <button class="add-btn" onclick="addC('${p.id}')">+ ADD TO ORDER</button>
+          </div>
+        </div>
+      </div>
+    </div>`).join('');
+}
+function renderR(){
+  document.getElementById('revGrid').innerHTML=R.map(r=>`
+    <div class="rc reveal"><div class="rc-img">${r.img}</div><div class="rc-body"><div class="rc-stars">${'★'.repeat(r.s)}</div><div class="rc-text">${r.t}</div><div class="rc-author"><div class="rc-av">${r.i}</div><div><div class="rc-name">${r.n}</div><div class="rc-loc">📍 ${r.l}</div></div></div></div></div>`).join('');
+}
+function renderMq(){
+  const items=['🌶️ 100% Natural','🏭 Made in Erode','⭐ 500+ Customers','🚫 Zero Preservatives','🪨 Stone Ground','📦 Ships 24hrs','💚 Veg Certified','🌾 Farm Fresh'];
+  const h=items.map(i=>`<div class="mq-item"><span class="mq-dot"></span>${i}</div>`).join('');
+  document.getElementById('mq').innerHTML=h+h;
+}
+
+/* ===== INTERACTIONS ===== */
+function selW(id,i){selWt[id]=i;document.querySelectorAll(`#w-${id} .wt-btn`).forEach((b,j)=>b.classList.toggle('sel',j===i))}
+function chgQ(id,d){qty[id]=Math.max(1,(qty[id]||1)+d);document.getElementById(`q-${id}`).textContent=qty[id]}
+function addC(id){
+  const p=P.find(x=>x.id===id),wi=selWt[id],w=p.wts[wi],q=qty[id],key=`${id}-${w.g}`;
+  const ex=cart.find(c=>c.key===key);
+  if(ex)ex.qty+=q;else cart.push({key,id,name:p.name,emoji:p.emoji,weight:w.g,price:w.p,qty:q});
+  qty[id]=1;document.getElementById(`q-${id}`).textContent=1;
+  updateBill();
+  toast(`${p.emoji} ${p.name} (${w.g}) × ${q} added!`);
+  const card=document.getElementById(`c-${id}`);card.classList.add('active');setTimeout(()=>card.classList.remove('active'),1200);
+}
+
+/* ===== BILL UPDATE ===== */
+function updateBill(){
+  const cnt=cart.reduce((s,i)=>s+i.qty,0);
+  const sub=cart.reduce((s,i)=>s+i.price*i.qty,0);
+  const disc=coupon?Math.round(sub*.15):0;
+  const del=(sub-disc)>=499?0:49;
+  const tot=sub-disc+del;
+
+  // Nav count
+  document.getElementById('navCount').textContent=cnt;
+  // Desktop bill
+  document.getElementById('bdCount').textContent=cnt+' items';
+  // Mobile bar
+  const mcb=document.getElementById('mcb');
+  mcb.classList.toggle('has-items',cnt>0);
+  document.getElementById('mcbCount').textContent=cnt+' items';
+  document.getElementById('mcbTotal').textContent='₹'+tot;
+  // Mobile modal count
+  document.getElementById('bmCount').textContent=cnt+' items';
+
+  const renderItems=(prefix)=>{
+    const el=document.getElementById(prefix+'Items');
+    if(!cart.length){el.innerHTML=`<div class="bill-empty"><div class="bill-empty-icon">🧺</div><p>Add products to see bill</p></div>`;return}
+    el.innerHTML=cart.map((c,i)=>`<div class="bi"><div><div class="bi-name">${c.emoji} ${c.name}</div><div class="bi-detail">${c.weight} × ${c.qty}</div><button class="bi-rm" onclick="rmC(${i})">✕ Remove</button></div><div class="bi-price">₹${c.price*c.qty}</div></div>`).join('');
+  };
+  renderItems('bd');renderItems('bm');
+
+  const updateSum=(prefix)=>{
+    const wrap=document.getElementById(prefix+'SumWrap');
+    wrap.style.display=cart.length?'block':'none';
+    document.getElementById(prefix+'Sub').textContent='₹'+sub;
+    document.getElementById(prefix+'Del').textContent=del===0?'FREE 🎉':'₹'+del;
+    const dr=document.getElementById(prefix+'DiscR');
+    if(coupon){dr.style.display='flex';document.getElementById(prefix+'Disc').textContent='-₹'+disc}else{dr.style.display='none'}
+    document.getElementById(prefix+'Total').textContent='₹'+tot;
+  };
+  updateSum('bd');updateSum('bm');
+}
+function rmC(i){const it=cart[i];cart.splice(i,1);updateBill();toast(`Removed ${it.name}`);}
+function applyCoupon(){
+  const codes=[document.getElementById('bdCoupon'),document.getElementById('bmCoupon')];
+  const val=(codes.find(c=>c.value.trim())||{value:''}).value.trim().toUpperCase();
+  if(val==='AMABAL15'){coupon=true;updateBill();toast('🎉 15% OFF applied!')}else{toast('⚠️ Invalid coupon')}
+}
+
+/* ===== BILL MODAL (MOBILE) ===== */
+function openBillModal(){document.getElementById('bmOverlay').classList.add('show');document.getElementById('bmModal').classList.add('show');document.body.style.overflow='hidden'}
+function closeBillModal(){document.getElementById('bmOverlay').classList.remove('show');document.getElementById('bmModal').classList.remove('show');document.body.style.overflow=''}
+
+/* ===== PINCODE ===== */
+let pinT;
+const TN={
+  '638001':{n:'Erode H.O.',d:'Erode'},'638002':{n:'Erode Collectorate',d:'Erode'},'638003':{n:'Erode Fort',d:'Erode'},'638004':{n:'Erode Brough Road',d:'Erode'},'638005':{n:'Surampatti',d:'Erode'},'638006':{n:'Karungalpalayam',d:'Erode'},'638007':{n:'Veerappanchatram',d:'Erode'},'638008':{n:'Thindal',d:'Erode'},'638009':{n:'Gandhipuram',d:'Erode'},'638051':{n:'Chithode',d:'Erode'},'638052':{n:'Kodumudi',d:'Erode'},'638053':{n:'Modakkurichi',d:'Erode'},'638054':{n:'Perundurai',d:'Erode'},'638055':{n:'Sivagiri',d:'Erode'},'638056':{n:'Bhavani',d:'Erode'},'638057':{n:'Sathyamangalam',d:'Erode'},'638060':{n:'Gobichettipalayam',d:'Erode'},'638301':{n:'Anthiyur',d:'Erode'},'638401':{n:'Gobichettipalayam H.O.',d:'Erode'},'638452':{n:'Sathyamangalam H.O.',d:'Erode'},'638501':{n:'Bhavani H.O.',d:'Erode'},
+  '641001':{n:'Coimbatore H.O.',d:'Coimbatore'},'641002':{n:'RS Puram',d:'Coimbatore'},'641003':{n:'Peelamedu',d:'Coimbatore'},'641004':{n:'Saibaba Colony',d:'Coimbatore'},'641005':{n:'Ganapathy',d:'Coimbatore'},'641006':{n:'Singanallur',d:'Coimbatore'},'641011':{n:'Gandhipuram CBE',d:'Coimbatore'},'641018':{n:'Podanur',d:'Coimbatore'},'641025':{n:'Vadavalli',d:'Coimbatore'},'641035':{n:'Sulur',d:'Coimbatore'},'641045':{n:'Mettupalayam',d:'Coimbatore'},
+  '641601':{n:'Tiruppur H.O.',d:'Tiruppur'},'641602':{n:'Tiruppur South',d:'Tiruppur'},'641603':{n:'Tiruppur Nallur',d:'Tiruppur'},'641604':{n:'Avinashi',d:'Tiruppur'},'641605':{n:'Palladam',d:'Tiruppur'},'641606':{n:'Kangayam',d:'Tiruppur'},'641607':{n:'Dharapuram',d:'Tiruppur'},'641608':{n:'Udumalpet',d:'Tiruppur'},
+  '600001':{n:'Chennai GPO',d:'Chennai'},'600017':{n:'T Nagar',d:'Chennai'},'600018':{n:'Mylapore',d:'Chennai'},'600028':{n:'Adyar',d:'Chennai'},'600032':{n:'Velachery',d:'Chennai'},'600040':{n:'Anna Nagar',d:'Chennai'},'600097':{n:'Tambaram',d:'Chennai'},'600119':{n:'OMR',d:'Chennai'},
+  '625001':{n:'Madurai H.O.',d:'Madurai'},'625002':{n:'Madurai GPO',d:'Madurai'},'625020':{n:'Vilangudi',d:'Madurai'},
+  '636001':{n:'Salem H.O.',d:'Salem'},'636002':{n:'Salem Fort',d:'Salem'},'636006':{n:'Salem Steel Plant',d:'Salem'},
+  '620001':{n:'Trichy H.O.',d:'Tiruchirappalli'},'620017':{n:'Srirangam',d:'Tiruchirappalli'},
+  '627001':{n:'Tirunelveli H.O.',d:'Tirunelveli'},'628001':{n:'Thoothukudi H.O.',d:'Thoothukudi'},
+  '637001':{n:'Namakkal H.O.',d:'Namakkal'},'639001':{n:'Karur H.O.',d:'Karur'},
+  '635001':{n:'Krishnagiri H.O.',d:'Krishnagiri'},'629001':{n:'Nagercoil',d:'Kanyakumari'},
+  '606001':{n:'Villupuram H.O.',d:'Villupuram'},'632001':{n:'Vellore H.O.',d:'Vellore'},
+  '624001':{n:'Dindigul H.O.',d:'Dindigul'},'613001':{n:'Thanjavur H.O.',d:'Thanjavur'},
+  '643001':{n:'Ooty',d:'Nilgiris'},'636401':{n:'Dharmapuri H.O.',d:'Dharmapuri'},
+  '631001':{n:'Kanchipuram H.O.',d:'Kanchipuram'},'602001':{n:'Tiruvallur H.O.',d:'Tiruvallur'},
+};
+function lookupPin(v){
+  clearTimeout(pinT);
+  const res=document.getElementById('pinRes'),ld=document.getElementById('pinLoad'),vi=document.getElementById('dVillage'),di=document.getElementById('dDist');
+  if(v.length<6){res.classList.remove('show');ld.style.display='none';vi.value='';di.value='';return}
+  if(v.length===6&&/^\d{6}$/.test(v)){
+    ld.style.display='block';res.classList.remove('show');
+    pinT=setTimeout(()=>{
+      fetch('https://api.postalpincode.in/pincode/'+v).then(r=>r.json()).then(d=>{
+        ld.style.display='none';
+        if(d[0]&&d[0].Status==='Success'&&d[0].PostOffice){
+          const o=d[0].PostOffice,f=o[0],names=o.map(x=>x.Name).slice(0,6).join(', ');
+          vi.value=f.Name;di.value=f.District;
+          res.className='pin-res show';
+          res.innerHTML=`<strong>📍 ${f.District}, ${f.State}</strong><br>Areas: ${names}${o.length>6?' + '+(o.length-6)+' more':''}`;
+          if(f.State!=='Tamil Nadu'){res.innerHTML+=`<br><span style="color:var(--ered);font-weight:600">⚠️ We currently deliver only within Tamil Nadu</span>`;res.className='pin-res show err'}
+        }else{res.className='pin-res show err';res.innerHTML='❌ Invalid pincode';vi.value='';di.value=''}
+      }).catch(()=>{
+        ld.style.display='none';
+        const loc=TN[v];
+        if(loc){vi.value=loc.n;di.value=loc.d;res.className='pin-res show';res.innerHTML=`<strong>📍 ${loc.d}, Tamil Nadu</strong><br>Area: ${loc.n}`}
+        else{res.className='pin-res show err';res.innerHTML='⚠️ Could not verify. Enter details manually.';vi.removeAttribute('readonly');di.removeAttribute('readonly')}
+      });
+    },500);
+  }
+}
+
+/* ===== ORDER ===== */
+function placeOrder(){
+  if(!cart.length){toast('⚠️ Add products first!');return}
+  const f=['dName','dPhone','dEmail','dPin','dAddr'];
+  for(const id of f){if(!document.getElementById(id).value.trim()){toast('⚠️ Fill all required fields!');return}}
+  document.getElementById('ordId').textContent='AMB-'+Math.floor(10000+Math.random()*90000);
+  document.getElementById('smOv').classList.add('show');
+}
+function closeSm(){document.getElementById('smOv').classList.remove('show')}
+
+/* ===== WELCOME ===== */
+function closeWo(){document.getElementById('woPop').classList.remove('show')}
+function copyCoupon(){navigator.clipboard&&navigator.clipboard.writeText('AMABAL15').then(()=>toast('📋 AMABAL15 copied!'))}
+let woSec=86399;
+function tickWo(){
+  const h=Math.floor(woSec/3600),m=Math.floor((woSec%3600)/60),s=woSec%60;
+  const el=document.getElementById('woTime');
+  if(el)el.textContent=`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  woSec--;if(woSec>=0)setTimeout(tickWo,1000);
+}
+
+/* ===== NAV ===== */
+function toggleNav(){const m=document.getElementById('nMenu'),d=document.getElementById('nMobile');m.classList.toggle('open');d.classList.toggle('open')}
+function closeNav(){document.getElementById('nMenu').classList.remove('open');document.getElementById('nMobile').classList.remove('open')}
+function goTo(sel){document.querySelector(sel).scrollIntoView({behavior:'smooth'})}
+
+/* ===== UTILS ===== */
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500)}
+function onScroll(){
+  document.getElementById('nav').classList.toggle('scrolled',window.scrollY>60);
+  document.querySelectorAll('.reveal').forEach(el=>{if(el.getBoundingClientRect().top<window.innerHeight-40)el.classList.add('vis')});
+}
+
+/* ===== INIT ===== */
+window.addEventListener('load',()=>{
+  setTimeout(()=>{document.getElementById('preloader').classList.add('hide');setTimeout(()=>document.getElementById('woPop').classList.add('show'),500)},1600);
+  renderP();renderR();renderMq();updateBill();onScroll();tickWo();
+});
+window.addEventListener('scroll',onScroll,{passive:true});
+window.addEventListener('resize',()=>{if(window.innerWidth>=1024)closeBillModal()},{passive:true});
+</script>
+</body>
+</html>
