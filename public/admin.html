@@ -300,20 +300,6 @@
           alert('Email fetch failed: ' + emailErr.message + '. Check if API route /api/send-confirmation exists.');
         }
 
-        // Open WhatsApp to customer
-        const cp = cleanPhone(order.phone);
-        if (cp && cp.length === 10) {
-          const waMsg = encodeURIComponent(
-            'Hi ' + order.customerName + '! Your AMBAL Masala Podi order #' + order.orderId + ' has been confirmed! ✅\n\n' +
-            '📦 Your order will be packed and dispatched within 24 hours.\n' +
-            '🚚 Tracking details will be shared soon.\n\n' +
-            'Thank you for choosing AMBAL Masala Podi! 🌶️'
-          );
-          window.open('https://wa.me/91' + cp + '?text=' + waMsg, '_blank');
-        } else {
-          alert('WhatsApp: Invalid phone number "' + order.phone + '" (cleaned: "' + cp + '"). Need 10 digits.');
-        }
-
         // Schedule 14-day follow-up (store in Firestore)
         const followupDate = new Date();
         followupDate.setDate(followupDate.getDate() + 14);
