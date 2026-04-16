@@ -9,6 +9,11 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="format-detection" content="telephone=no">
   <title>AMBAL Masala — Traditional South Indian Spice Blends from Erode</title>
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-storage-compat.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
@@ -1617,6 +1622,235 @@
       color: #999
     }
 
+    .rc-email {
+      font-size: clamp(.58rem, .9vw, .65rem);
+      color: #aaa;
+      word-break: break-all
+    }
+
+    .rc-imgs {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px
+    }
+
+    .rc-imgs img {
+      width: clamp(60px, 12vw, 100px);
+      height: clamp(60px, 12vw, 100px);
+      object-fit: cover;
+      border-radius: 4px;
+      border: 1px solid rgba(0, 0, 0, .08);
+      cursor: pointer;
+      transition: transform .2s
+    }
+
+    .rc-imgs img:active {
+      transform: scale(1.05)
+    }
+
+    .rc-date {
+      font-size: clamp(.55rem, .85vw, .62rem);
+      color: #bbb;
+      margin-top: 6px
+    }
+
+    /* ============ WRITE REVIEW ============ */
+    .wr {
+      max-width: 600px;
+      margin: clamp(30px, 5vw, 50px) auto 0;
+      background: #fff;
+      border: 1px solid rgba(0, 0, 0, .06);
+      padding: clamp(20px, 3vw, 32px);
+    }
+
+    .wr-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.1rem, 2vw, 1.4rem);
+      font-weight: 800;
+      color: var(--dark);
+      margin-bottom: 16px;
+      text-align: center
+    }
+
+    .wr-google-btn {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 12px 20px;
+      background: #fff;
+      border: 2px solid #ddd;
+      font-weight: 600;
+      font-size: clamp(.8rem, 1.3vw, .9rem);
+      color: var(--dark);
+      transition: all .2s;
+      cursor: pointer
+    }
+
+    .wr-google-btn:hover,
+    .wr-google-btn:active {
+      border-color: #4285F4;
+      background: #f8f9ff
+    }
+
+    .wr-google-btn svg {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0
+    }
+
+    .wr-user {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      background: var(--light-gold);
+      margin-bottom: 16px
+    }
+
+    .wr-user img {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%
+    }
+
+    .wr-user-info {
+      flex: 1
+    }
+
+    .wr-user-name {
+      font-weight: 700;
+      font-size: clamp(.8rem, 1.2vw, .88rem)
+    }
+
+    .wr-user-email {
+      font-size: clamp(.65rem, 1vw, .72rem);
+      color: #777
+    }
+
+    .wr-signout {
+      background: none;
+      border: none;
+      color: var(--ered);
+      font-size: clamp(.65rem, 1vw, .72rem);
+      text-decoration: underline;
+      cursor: pointer;
+      min-height: 30px
+    }
+
+    .wr-form {
+      display: none;
+      flex-direction: column;
+      gap: 14px
+    }
+
+    .wr-form.show {
+      display: flex
+    }
+
+    .wr-stars {
+      display: flex;
+      gap: 4px
+    }
+
+    .wr-star {
+      font-size: clamp(1.6rem, 3vw, 2rem);
+      background: none;
+      border: none;
+      color: #ddd;
+      cursor: pointer;
+      padding: 2px;
+      min-height: 36px;
+      transition: color .15s
+    }
+
+    .wr-star.active {
+      color: var(--turmeric)
+    }
+
+    .wr-textarea {
+      width: 100%;
+      min-height: 80px;
+      border: 1.5px solid #ddd;
+      padding: 12px;
+      font-size: clamp(.8rem, 1.2vw, .88rem);
+      resize: vertical;
+      outline: none;
+      font-family: inherit;
+      line-height: 1.6
+    }
+
+    .wr-textarea:focus {
+      border-color: var(--ered)
+    }
+
+    .wr-imgs {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap
+    }
+
+    .wr-img-btn {
+      width: clamp(70px, 12vw, 90px);
+      height: clamp(70px, 12vw, 90px);
+      border: 2px dashed #ccc;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      background: #fafafa;
+      cursor: pointer;
+      font-size: clamp(.55rem, .9vw, .65rem);
+      color: #999;
+      position: relative;
+      overflow: hidden;
+      transition: border-color .2s
+    }
+
+    .wr-img-btn:hover {
+      border-color: var(--ered)
+    }
+
+    .wr-img-btn img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover
+    }
+
+    .wr-img-btn input {
+      display: none
+    }
+
+    .wr-img-icon {
+      font-size: 1.3rem
+    }
+
+    .wr-submit {
+      width: 100%;
+      background: var(--ered);
+      color: #fff;
+      border: none;
+      padding: 14px;
+      font-weight: 700;
+      font-size: clamp(.78rem, 1.3vw, .88rem);
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      transition: background .2s
+    }
+
+    .wr-submit:active {
+      background: var(--deep-red)
+    }
+
+    .wr-submit:disabled {
+      background: #ccc;
+      cursor: not-allowed
+    }
+
     /* ============ FOOTER ============ */
     footer {
       background: var(--dark);
@@ -2391,6 +2625,57 @@
       <div class="sh-line"></div>
     </div>
     <div class="rev-grid" id="revGrid"></div>
+
+    <!-- WRITE A REVIEW -->
+    <div class="wr" id="wrBox">
+      <div class="wr-title">Write a Review</div>
+
+      <!-- Google Sign-In -->
+      <div id="wrAuth">
+        <button class="wr-google-btn" onclick="googleSignIn()">
+          <svg viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59a14.5 14.5 0 010-9.18l-7.98-6.19a24.03 24.03 0 000 21.56l7.98-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+          Sign in with Google to Review
+        </button>
+      </div>
+
+      <!-- Signed-in user info -->
+      <div id="wrUser" style="display:none">
+        <div class="wr-user">
+          <img id="wrAvatar" src="" alt="avatar">
+          <div class="wr-user-info">
+            <div class="wr-user-name" id="wrName"></div>
+            <div class="wr-user-email" id="wrEmail"></div>
+          </div>
+          <button class="wr-signout" onclick="googleSignOut()">Sign out</button>
+        </div>
+      </div>
+
+      <!-- Review Form -->
+      <form class="wr-form" id="wrForm" onsubmit="submitReview(event)">
+        <div class="wr-stars" id="wrStars">
+          <button type="button" class="wr-star" onclick="setRating(1)">★</button>
+          <button type="button" class="wr-star" onclick="setRating(2)">★</button>
+          <button type="button" class="wr-star" onclick="setRating(3)">★</button>
+          <button type="button" class="wr-star" onclick="setRating(4)">★</button>
+          <button type="button" class="wr-star" onclick="setRating(5)">★</button>
+        </div>
+        <textarea class="wr-textarea" id="wrText" placeholder="Share your experience with our masala podis..." required></textarea>
+        <div class="wr-imgs">
+          <label class="wr-img-btn" id="wrImg1">
+            <span class="wr-img-icon">📷</span>
+            <span>Image 1</span>
+            <input type="file" accept="image/*" onchange="previewImg(this, 'wrImg1')">
+          </label>
+          <label class="wr-img-btn" id="wrImg2">
+            <span class="wr-img-icon">📷</span>
+            <span>Image 2</span>
+            <input type="file" accept="image/*" onchange="previewImg(this, 'wrImg2')">
+          </label>
+          <span style="font-size:.7rem;color:#999;align-self:center">Optional</span>
+        </div>
+        <button type="submit" class="wr-submit" id="wrSubmit">Submit Review</button>
+      </form>
+    </div>
   </section>
 
   <!-- FOOTER -->
@@ -2442,6 +2727,22 @@
   <div class="toast" id="toast"></div>
 
   <script>
+    /* ===== FIREBASE INIT ===== */
+    const firebaseConfig = {
+      apiKey: "AIzaSyBIatWDx7xcLdcQcmSo_ek2-QEhz3eJEsg",
+      authDomain: "erode-masala.firebaseapp.com",
+      projectId: "erode-masala",
+      storageBucket: "erode-masala.firebasestorage.app",
+      messagingSenderId: "1046327421834",
+      appId: "1:1046327421834:web:0abc41598af70bf430b673",
+      measurementId: "G-DD1D4X0KZB"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const storage = firebase.storage();
+    const auth = firebase.auth();
+    const googleProvider = new firebase.auth.GoogleAuthProvider();
+
     /* ===== DATA ===== */
     const P = [
       { id: 'murungai', name: 'Murungai Podi', tamil: 'முருங்கை பொடி', desc: 'Drumstick leaf powder with aromatic Erode spices. Perfect with hot rice & ghee.', badge: '🔥 Bestseller', emoji: '🌿', col: '#2D6A27', wts: [{ g: '50g', p: 89 }, { g: '100g', p: 149 }, { g: '200g', p: 269 }, { g: '500g', p: 599 }] },
@@ -2483,8 +2784,143 @@
     </div>`).join('');
     }
     function renderR() {
-      document.getElementById('revGrid').innerHTML = R.map(r => `
+      /* Render static/default reviews */
+      const staticHTML = R.map(r => `
     <div class="rc reveal"><div class="rc-img">${r.img}</div><div class="rc-body"><div class="rc-stars">${'★'.repeat(r.s)}</div><div class="rc-text">${r.t}</div><div class="rc-author"><div class="rc-av">${r.i}</div><div><div class="rc-name">${r.n}</div><div class="rc-loc">📍 ${r.l}</div></div></div></div></div>`).join('');
+      document.getElementById('revGrid').innerHTML = staticHTML;
+      /* Load Firestore reviews */
+      loadFirebaseReviews();
+    }
+
+    function loadFirebaseReviews() {
+      db.collection('reviews').orderBy('createdAt', 'desc').get().then(snap => {
+        const grid = document.getElementById('revGrid');
+        snap.forEach(doc => {
+          const r = doc.data();
+          const stars = '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating);
+          const initials = r.name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+          const imgs = (r.images || []).map(url => `<img src="${url}" alt="Review photo" onclick="window.open('${url}','_blank')">`).join('');
+          const date = r.createdAt ? new Date(r.createdAt.seconds * 1000).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : '';
+          const div = document.createElement('div');
+          div.className = 'rc reveal';
+          div.innerHTML = `
+            <div class="rc-body">
+              <div class="rc-stars">${stars}</div>
+              <div class="rc-text">"${r.text}"</div>
+              ${imgs ? `<div class="rc-imgs">${imgs}</div>` : ''}
+              <div class="rc-author">
+                <div class="rc-av">${initials}</div>
+                <div>
+                  <div class="rc-name">${r.name}</div>
+                  <div class="rc-email">${r.email}</div>
+                  ${date ? `<div class="rc-date">${date}</div>` : ''}
+                </div>
+              </div>
+            </div>`;
+          grid.prepend(div);
+        });
+        document.querySelectorAll('.reveal').forEach(el => { if (el.getBoundingClientRect().top < window.innerHeight - 40) el.classList.add('vis') });
+      });
+    }
+
+    /* ===== REVIEW FORM: GOOGLE AUTH ===== */
+    let reviewRating = 0;
+
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        document.getElementById('wrAuth').style.display = 'none';
+        document.getElementById('wrUser').style.display = 'block';
+        document.getElementById('wrForm').classList.add('show');
+        document.getElementById('wrAvatar').src = user.photoURL || '';
+        document.getElementById('wrName').textContent = user.displayName || 'User';
+        document.getElementById('wrEmail').textContent = user.email;
+      } else {
+        document.getElementById('wrAuth').style.display = 'block';
+        document.getElementById('wrUser').style.display = 'none';
+        document.getElementById('wrForm').classList.remove('show');
+      }
+    });
+
+    function googleSignIn() {
+      auth.signInWithPopup(googleProvider).catch(err => {
+        toast('Sign-in failed: ' + err.message);
+      });
+    }
+
+    function googleSignOut() {
+      auth.signOut();
+      toast('Signed out');
+    }
+
+    function setRating(n) {
+      reviewRating = n;
+      document.querySelectorAll('#wrStars .wr-star').forEach((s, i) => {
+        s.classList.toggle('active', i < n);
+      });
+    }
+
+    function previewImg(input, labelId) {
+      const file = input.files[0];
+      if (!file) return;
+      if (file.size > 5 * 1024 * 1024) { toast('Image must be under 5MB'); input.value = ''; return; }
+      const reader = new FileReader();
+      reader.onload = e => {
+        const label = document.getElementById(labelId);
+        let img = label.querySelector('img');
+        if (!img) { img = document.createElement('img'); label.appendChild(img); }
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    async function uploadImage(file) {
+      const name = Date.now() + '_' + Math.random().toString(36).slice(2) + '_' + file.name;
+      const ref = storage.ref('reviews/' + name);
+      await ref.put(file);
+      return await ref.getDownloadURL();
+    }
+
+    async function submitReview(e) {
+      e.preventDefault();
+      const user = auth.currentUser;
+      if (!user) { toast('Please sign in with Google first'); return; }
+      if (reviewRating === 0) { toast('Please select a star rating'); return; }
+      const text = document.getElementById('wrText').value.trim();
+      if (!text) { toast('Please write your review'); return; }
+
+      const btn = document.getElementById('wrSubmit');
+      btn.disabled = true;
+      btn.textContent = 'SUBMITTING...';
+
+      try {
+        const images = [];
+        const file1 = document.querySelector('#wrImg1 input').files[0];
+        const file2 = document.querySelector('#wrImg2 input').files[0];
+        if (file1) images.push(await uploadImage(file1));
+        if (file2) images.push(await uploadImage(file2));
+
+        await db.collection('reviews').add({
+          name: user.displayName || 'Anonymous',
+          email: user.email,
+          uid: user.uid,
+          rating: reviewRating,
+          text: text,
+          images: images,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+
+        toast('Thank you for your review!');
+        document.getElementById('wrForm').reset();
+        reviewRating = 0;
+        document.querySelectorAll('#wrStars .wr-star').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('.wr-img-btn img').forEach(i => i.remove());
+        renderR();
+      } catch (err) {
+        toast('Error submitting review: ' + err.message);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'SUBMIT REVIEW';
+      }
     }
     function renderMq() {
       const items = ['🌶️ 100% Natural', '🏭 Made in Erode', '⭐ 500+ Customers', '🚫 Zero Preservatives', '🪨 Stone Ground', '📦 Ships 24hrs', '💚 Veg Certified', '🌾 Farm Fresh'];
