@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AMBAL Masala — Admin Panel</title>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif; background:#f5f0e8; color:#1A0A00; min-height:100vh; }
+
+    /* Login Screen */
+    .login-screen { display:flex; align-items:center; justify-content:center; min-height:100vh; padding:20px; }
+    .login-box { background:#fff; padding:40px; max-width:400px; width:100%; text-align:center; box-shadow:0 8px 30px rgba(0,0,0,.1); border-radius:8px; }
+    .login-box h1 { font-size:24px; color:#8B1A1A; margin-bottom:6px; }
+    .login-box p { color:#888; font-size:13px; margin-bottom:24px; }
+    .login-box .icon { font-size:48px; margin-bottom:16px; }
+    .google-btn { display:flex; align-items:center; justify-content:center; gap:10px; width:100%; padding:14px; border:2px solid #ddd; background:#fff; font-size:15px; font-weight:600; cursor:pointer; border-radius:6px; transition:all .2s; }
+    .google-btn:hover { border-color:#4285F4; background:#f8f9ff; }
+    .access-denied { color:#D42B2B; font-weight:600; margin-top:16px; display:none; }
+
+    /* Header */
+    .admin-header { background:linear-gradient(135deg,#1A0A00,#3D1E0C); padding:16px 24px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:100; }
+    .admin-brand { color:#F7C948; font-size:18px; font-weight:800; }
+    .admin-brand small { display:block; font-size:10px; color:#F5E6C8; font-weight:400; letter-spacing:2px; }
+    .admin-user { display:flex; align-items:center; gap:10px; }
+    .admin-user img { width:32px; height:32px; border-radius:50%; }
+    .admin-user span { color:#F5E6C8; font-size:13px; }
+    .admin-logout { background:#D42B2B; color:#fff; border:none; padding:8px 16px; font-size:12px; font-weight:600; cursor:pointer; border-radius:4px; }
+
+    /* Stats */
+    .stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:12px; padding:20px 24px; }
+    .stat { background:#fff; padding:16px; border-radius:8px; text-align:center; box-shadow:0 2px 8px rgba(0,0,0,.05); }
+    .stat-num { font-size:28px; font-weight:900; color:#8B1A1A; }
+    .stat-label { font-size:11px; color:#888; text-transform:uppercase; letter-spacing:1px; margin-top:4px; }
+
+    /* Tabs */
+    .tabs { display:flex; padding:0 24px; gap:0; }
+    .tab { flex:1; padding:12px; text-align:center; background:#fff; border:none; font-weight:700; font-size:13px; cursor:pointer; color:#999; border-bottom:3px solid transparent; transition:all .2s; }
+    .tab.active { color:#D42B2B; border-bottom-color:#D42B2B; background:#fdf6ec; }
+
+    /* Orders */
+    .orders { padding:16px 24px; display:flex; flex-direction:column; gap:12px; }
+    .order-card { background:#fff; border-radius:8px; overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,.05); }
+    .order-top { display:flex; justify-content:space-between; align-items:center; padding:14px 16px; border-bottom:1px solid #f0f0f0; }
+    .order-id { font-weight:800; color:#8B1A1A; font-size:15px; }
+    .order-date { font-size:11px; color:#999; }
+    .order-status { padding:4px 12px; border-radius:20px; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.5px; }
+    .status-pending { background:#FFF3CD; color:#856404; }
+    .status-confirmed { background:#D4EDDA; color:#155724; }
+    .status-followup { background:#D1ECF1; color:#0C5460; }
+    .order-body { padding:14px 16px; }
+    .order-customer { font-size:14px; margin-bottom:4px; }
+    .order-customer strong { color:#333; }
+    .order-detail { font-size:12px; color:#777; line-height:1.8; }
+    .order-items { margin-top:8px; font-size:13px; color:#555; }
+    .order-item { display:flex; justify-content:space-between; padding:4px 0; border-bottom:1px solid #f9f9f9; }
+    .order-total-row { display:flex; justify-content:space-between; padding:8px 0 0; margin-top:6px; border-top:2px dashed #D42B2B; }
+    .order-total-row strong { color:#D42B2B; font-size:16px; }
+    .order-actions { padding:12px 16px; border-top:1px solid #f0f0f0; display:flex; gap:8px; }
+    .btn-accept { flex:1; background:#1B7A3D; color:#fff; border:none; padding:12px; font-weight:700; font-size:13px; cursor:pointer; border-radius:4px; letter-spacing:.5px; }
+    .btn-accept:hover { background:#155f30; }
+    .btn-accept:disabled { background:#ccc; cursor:not-allowed; }
+    .btn-wa { background:#25D366; color:#fff; border:none; padding:12px 16px; font-weight:600; font-size:13px; cursor:pointer; border-radius:4px; text-decoration:none; display:flex; align-items:center; gap:4px; }
+
+    .empty { text-align:center; padding:60px 20px; color:#bbb; font-size:14px; }
+
+    .hidden { display:none !important; }
+  </style>
+</head>
+<body>
+
+  <!-- Login Screen -->
+  <div class="login-screen" id="loginScreen">
+    <div class="login-box">
+      <div class="icon">🔐</div>
+      <h1>AMBAL Admin</h1>
+      <p>Sign in with your authorized Google account</p>
+      <button class="google-btn" onclick="adminLogin()">
+        <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59a14.5 14.5 0 010-9.18l-7.98-6.19a24.03 24.03 0 000 21.56l7.98-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+        Sign in with Google
+      </button>
+      <p class="access-denied" id="accessDenied">Access denied. Only authorized admins can access this panel.</p>
+    </div>
+  </div>
+
+  <!-- Admin Panel -->
+  <div class="hidden" id="adminPanel">
+    <div class="admin-header">
+      <div class="admin-brand">🪔 AMBAL ADMIN<small>Order Management</small></div>
+      <div class="admin-user">
+        <img id="adminAvatar" src="" alt="">
+        <span id="adminName"></span>
+        <button class="admin-logout" onclick="adminLogout()">Logout</button>
+      </div>
+    </div>
+
+    <div class="stats" id="stats">
+      <div class="stat"><div class="stat-num" id="statTotal">0</div><div class="stat-label">Total Orders</div></div>
+      <div class="stat"><div class="stat-num" id="statPending">0</div><div class="stat-label">Pending</div></div>
+      <div class="stat"><div class="stat-num" id="statConfirmed">0</div><div class="stat-label">Confirmed</div></div>
+      <div class="stat"><div class="stat-num" id="statRevenue">₹0</div><div class="stat-label">Revenue</div></div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" id="tabAll" onclick="filterOrders('all')">All</button>
+      <button class="tab" id="tabPend" onclick="filterOrders('pending')">Pending</button>
+      <button class="tab" id="tabConf" onclick="filterOrders('confirmed')">Confirmed</button>
+    </div>
+
+    <div class="orders" id="ordersList"></div>
+  </div>
+
+  <script>
+    const ADMIN_EMAIL = 'nandhakumarpkr@gmail.com';
+
+    firebase.initializeApp({
+      apiKey: "AIzaSyBIatWDx7xcLdcQcmSo_ek2-QEhz3eJEsg",
+      authDomain: "erode-masala.firebaseapp.com",
+      projectId: "erode-masala",
+      storageBucket: "erode-masala.firebasestorage.app",
+      messagingSenderId: "1046327421834",
+      appId: "1:1046327421834:web:0abc41598af70bf430b673"
+    });
+
+    const db = firebase.firestore();
+    const auth = firebase.auth();
+    const provider = new firebase.auth.GoogleAuthProvider();
+
+    let allOrders = [];
+    let currentFilter = 'all';
+
+    // Auth
+    auth.onAuthStateChanged(user => {
+      if (user && user.email === ADMIN_EMAIL) {
+        document.getElementById('loginScreen').classList.add('hidden');
+        document.getElementById('adminPanel').classList.remove('hidden');
+        document.getElementById('adminAvatar').src = user.photoURL || '';
+        document.getElementById('adminName').textContent = user.displayName || user.email;
+        loadOrders();
+      } else if (user) {
+        document.getElementById('accessDenied').style.display = 'block';
+        auth.signOut();
+      }
+    });
+
+    function adminLogin() {
+      document.getElementById('accessDenied').style.display = 'none';
+      auth.signInWithPopup(provider).catch(err => {
+        alert('Login failed: ' + err.message);
+      });
+    }
+
+    function adminLogout() {
+      auth.signOut().then(() => {
+        document.getElementById('loginScreen').classList.remove('hidden');
+        document.getElementById('adminPanel').classList.add('hidden');
+      });
+    }
+
+    // Load orders
+    function loadOrders() {
+      db.collection('orders').orderBy('createdAt', 'desc').onSnapshot(snap => {
+        allOrders = [];
+        snap.forEach(doc => {
+          allOrders.push({ id: doc.id, ...doc.data() });
+        });
+        updateStats();
+        renderOrders();
+      });
+    }
+
+    function updateStats() {
+      const pending = allOrders.filter(o => o.status === 'pending').length;
+      const confirmed = allOrders.filter(o => o.status === 'confirmed').length;
+      const revenue = allOrders.filter(o => o.status === 'confirmed').reduce((s, o) => s + (o.total || 0), 0);
+      document.getElementById('statTotal').textContent = allOrders.length;
+      document.getElementById('statPending').textContent = pending;
+      document.getElementById('statConfirmed').textContent = confirmed;
+      document.getElementById('statRevenue').textContent = '₹' + revenue;
+    }
+
+    function filterOrders(filter) {
+      currentFilter = filter;
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.getElementById(filter === 'all' ? 'tabAll' : filter === 'pending' ? 'tabPend' : 'tabConf').classList.add('active');
+      renderOrders();
+    }
+
+    function renderOrders() {
+      const list = currentFilter === 'all' ? allOrders : allOrders.filter(o => o.status === currentFilter);
+      const el = document.getElementById('ordersList');
+
+      if (list.length === 0) {
+        el.innerHTML = '<div class="empty">No orders found</div>';
+        return;
+      }
+
+      el.innerHTML = list.map(o => {
+        const date = o.createdAt ? new Date(o.createdAt.seconds * 1000).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'Asia/Kolkata' }) : 'N/A';
+        const statusClass = o.status === 'confirmed' ? 'status-confirmed' : 'status-pending';
+        const statusText = o.status === 'confirmed' ? 'Confirmed' : 'Pending';
+        const items = (o.items || []).map(i => `
+          <div class="order-item">
+            <span>${i.emoji || '🌶️'} ${i.name} (${i.weight}) × ${i.qty}</span>
+            <span>₹${i.total}</span>
+          </div>
+        `).join('');
+
+        const waText = encodeURIComponent(
+          `Hi ${o.customerName}! Your AMBAL Masala Podi order #${o.orderId} has been confirmed! ✅\n\n` +
+          `📦 Your order will be packed and dispatched within 24 hours.\n` +
+          `🚚 Tracking details will be shared soon.\n\n` +
+          `Thank you for choosing AMBAL Masala Podi! 🌶️`
+        );
+
+        return `
+        <div class="order-card">
+          <div class="order-top">
+            <div>
+              <div class="order-id">#${o.orderId || 'N/A'}</div>
+              <div class="order-date">${date}</div>
+            </div>
+            <span class="order-status ${statusClass}">${statusText}</span>
+          </div>
+          <div class="order-body">
+            <div class="order-customer"><strong>👤 ${o.customerName || 'N/A'}</strong></div>
+            <div class="order-detail">
+              📞 ${o.phone || 'N/A'}<br>
+              📧 ${o.customerEmail || 'N/A'}<br>
+              📍 ${o.address || 'N/A'}
+            </div>
+            <div class="order-items">
+              ${items}
+              <div class="order-total-row">
+                <span>Total</span>
+                <strong>₹${o.total || 0}</strong>
+              </div>
+            </div>
+          </div>
+          <div class="order-actions">
+            ${o.status === 'pending' ? `<button class="btn-accept" onclick="acceptOrder('${o.id}')">✅ Accept Order</button>` : ''}
+            <a class="btn-wa" href="https://wa.me/91${o.phone}?text=${waText}" target="_blank">📱 WhatsApp</a>
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    // Accept order
+    async function acceptOrder(docId) {
+      const order = allOrders.find(o => o.id === docId);
+      if (!order) return;
+
+      const btn = event.target;
+      btn.disabled = true;
+      btn.textContent = 'Processing...';
+
+      try {
+        // Update status in Firestore
+        await db.collection('orders').doc(docId).update({
+          status: 'confirmed',
+          confirmedAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+
+        // Send confirmation email
+        await fetch('/api/send-confirmation', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            orderId: order.orderId,
+            customerName: order.customerName,
+            customerEmail: order.customerEmail,
+            phone: order.phone,
+            address: order.address,
+            items: order.items,
+            subtotal: order.subtotal,
+            discount: order.discount,
+            delivery: order.delivery,
+            total: order.total
+          })
+        });
+
+        // Schedule 14-day follow-up (store in Firestore)
+        const followupDate = new Date();
+        followupDate.setDate(followupDate.getDate() + 14);
+        await db.collection('followups').add({
+          orderId: order.orderId,
+          customerName: order.customerName,
+          customerEmail: order.customerEmail,
+          scheduledAt: firebase.firestore.Timestamp.fromDate(followupDate),
+          sent: false
+        });
+
+        alert('Order confirmed! Confirmation email sent to ' + order.customerEmail);
+      } catch (err) {
+        alert('Error: ' + err.message);
+        btn.disabled = false;
+        btn.textContent = '✅ Accept Order';
+      }
+    }
+
+    // Check URL for direct accept
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('accept')) {
+      auth.onAuthStateChanged(user => {
+        if (user && user.email === ADMIN_EMAIL) {
+          const orderId = params.get('accept');
+          db.collection('orders').where('orderId', '==', orderId).get().then(snap => {
+            if (!snap.empty) {
+              const doc = snap.docs[0];
+              if (doc.data().status === 'pending') {
+                acceptOrder(doc.id);
+              }
+            }
+          });
+        }
+      });
+    }
+  </script>
+</body>
+</html>

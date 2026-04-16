@@ -3282,12 +3282,63 @@
     }
 
     /* ===== ORDER ===== */
-    function placeOrder() {
+    async function placeOrder() {
       if (!cart.length) { toast('⚠️ Add products first!'); return }
       const f = ['dName', 'dPhone', 'dEmail', 'dPin', 'dAddr'];
       for (const id of f) { if (!document.getElementById(id).value.trim()) { toast('⚠️ Fill all required fields!'); return } }
-      document.getElementById('ordId').textContent = 'AMB-' + Math.floor(10000 + Math.random() * 90000);
-      document.getElementById('smOv').classList.add('show');
+
+      const orderId = 'AMB-' + Math.floor(10000 + Math.random() * 90000);
+      document.getElementById('ordId').textContent = orderId;
+
+      const customerName = document.getElementById('dName').value.trim();
+      const phone = document.getElementById('dPhone').value.trim();
+      const customerEmail = document.getElementById('dEmail').value.trim();
+      const pin = document.getElementById('dPin').value.trim();
+      const address = document.getElementById('dAddr').value.trim() + ' — ' + pin;
+
+      const sub = cart.reduce((s, c) => s + c.price * c.qty, 0);
+      const disc = coupon ? Math.round(sub * 0.15) : 0;
+      const del = sub >= 499 ? 0 : 49;
+      const total = sub - disc + del;
+
+      const orderItems = cart.map(c => ({
+        name: c.name, emoji: c.emoji, weight: c.weight,
+        qty: c.qty, price: c.price, total: c.price * c.qty
+      }));
+
+      const orderData = {
+        orderId, customerName, phone, customerEmail, address,
+        items: orderItems, subtotal: sub, discount: disc,
+        delivery: del, total, status: 'pending',
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      };
+
+      try {
+        // Save to Firestore
+        await db.collection('orders').add(orderData);
+
+        // Send acknowledgment email + admin notification
+        fetch('/api/send-acknowledgment', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(orderData)
+        }).catch(err => console.error('Email error:', err));
+
+        // Open WhatsApp to admin with order details
+        const waMsg = encodeURIComponent(
+          `🔔 *NEW ORDER — #${orderId}*\n\n` +
+          `👤 ${customerName}\n📞 ${phone}\n📧 ${customerEmail}\n📍 ${address}\n\n` +
+          `📦 *Items:*\n${orderItems.map(i => `• ${i.name} (${i.weight}) × ${i.qty} = ₹${i.total}`).join('\n')}\n\n` +
+          `💰 *Total: ₹${total}*${disc > 0 ? ` (Discount: ₹${disc})` : ''}\n\n` +
+          `✅ Accept this order in admin panel.`
+        );
+        window.open(`https://wa.me/917548873582?text=${waMsg}`, '_blank');
+
+        document.getElementById('smOv').classList.add('show');
+        cart = []; updateBill();
+      } catch (err) {
+        toast('❌ Order failed: ' + err.message);
+      }
     }
     function closeSm() { document.getElementById('smOv').classList.remove('show') }
 

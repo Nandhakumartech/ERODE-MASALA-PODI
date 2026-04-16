@@ -2,7 +2,21 @@
   "buildCommand": "",
   "outputDirectory": "public",
   "framework": null,
+  "functions": {
+    "api/*.js": {
+      "memory": 256,
+      "maxDuration": 10
+    }
+  },
+  "crons": [
+    {
+      "path": "/api/cron-followup",
+      "schedule": "0 9 * * *"
+    }
+  ],
   "rewrites": [
-    { "source": "/(.*)", "destination": "/index.html" }
+    { "source": "/api/(.*)", "destination": "/api/$1" },
+    { "source": "/admin", "destination": "/admin.html" },
+    { "source": "/((?!admin).*)", "destination": "/index.html" }
   ]
 }
