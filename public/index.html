@@ -3318,21 +3318,17 @@
         await db.collection('orders').add(orderData);
 
         // Send acknowledgment email + admin notification
-        fetch('/api/send-acknowledgment', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(orderData)
-        }).catch(err => console.error('Email error:', err));
-
-        // Open WhatsApp to admin with order details
-        const waMsg = encodeURIComponent(
-          `🔔 *NEW ORDER — #${orderId}*\n\n` +
-          `👤 ${customerName}\n📞 ${phone}\n📧 ${customerEmail}\n📍 ${address}\n\n` +
-          `📦 *Items:*\n${orderItems.map(i => `• ${i.name} (${i.weight}) × ${i.qty} = ₹${i.total}`).join('\n')}\n\n` +
-          `💰 *Total: ₹${total}*${disc > 0 ? ` (Discount: ₹${disc})` : ''}\n\n` +
-          `✅ Accept this order in admin panel.`
-        );
-        window.open(`https://wa.me/917548873582?text=${waMsg}`, '_blank');
+        try {
+          const emailRes = await fetch('/api/send-acknowledgment', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(orderData)
+          });
+          const emailResult = await emailRes.json();
+          if (!emailRes.ok) console.error('Email API error:', emailResult);
+        } catch (emailErr) {
+          console.error('Email fetch error:', emailErr);
+        }
 
         document.getElementById('smOv').classList.add('show');
         cart = []; updateBill();
