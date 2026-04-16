@@ -7,6 +7,6 @@
     "build": "echo 'Static site - no build needed'"
   },
   "dependencies": {
-    "resend": "^6.12.0"
+    "nodemailer": "^8.0.5"
   }
 }

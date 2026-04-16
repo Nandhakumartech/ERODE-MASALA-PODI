@@ -1,8 +1,15 @@
-const { Resend } = require('resend');
+const nodemailer = require('nodemailer');
 
-const resend = new Resend(process.env.RESEND_API_KEY);
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'nandhakumarpkr@gmail.com';
-const ADMIN_WHATSAPP = '7548873582';
+const GMAIL_USER = process.env.GMAIL_USER || 'nandhakumarpkr@gmail.com';
+const GMAIL_APP_PASSWORD = process.env.GMAIL_APP_PASSWORD;
+
+function createTransporter() {
+  return nodemailer.createTransport({
+    service: 'gmail',
+    auth: { user: GMAIL_USER, pass: GMAIL_APP_PASSWORD }
+  });
+}
 
 function buildItemsHTML(items) {
   return items.map(item => `
@@ -186,23 +193,24 @@ module.exports = async function handler(req, res) {
     order.date = new Date().toLocaleString('en-IN', { dateStyle: 'long', timeStyle: 'short', timeZone: 'Asia/Kolkata' });
     order.adminUrl = `https://${req.headers.host}`;
 
+    const transporter = createTransporter();
+
     // Send acknowledgment to customer
-    await resend.emails.send({
-      from: 'AMBAL Masala Podi <onboarding@resend.dev>',
+    await transporter.sendMail({
+      from: `AMBAL Masala Podi <${GMAIL_USER}>`,
       to: order.customerEmail,
       subject: `✅ Order Received — #${order.orderId} | AMBAL Masala Podi`,
       html: acknowledgmentEmail(order)
     });
 
     // Send notification to admin
-    await resend.emails.send({
-      from: 'AMBAL Orders <onboarding@resend.dev>',
+    await transporter.sendMail({
+      from: `AMBAL Orders <${GMAIL_USER}>`,
       to: ADMIN_EMAIL,
       subject: `🔔 New Order #${order.orderId} — ₹${order.total} | ${order.customerName}`,
       html: adminNotificationEmail(order)
     });
 
-    // Store order in response for Firestore (frontend handles Firestore write)
     res.status(200).json({ success: true, message: 'Acknowledgment sent' });
   } catch (err) {
     console.error('Email error:', err);

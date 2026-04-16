@@ -1,6 +1,7 @@
-const { Resend } = require('resend');
+const nodemailer = require('nodemailer');
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const GMAIL_USER = process.env.GMAIL_USER || 'nandhakumarpkr@gmail.com';
+const GMAIL_APP_PASSWORD = process.env.GMAIL_APP_PASSWORD;
 
 function confirmationEmail(order) {
   return `
@@ -110,8 +111,13 @@ module.exports = async function handler(req, res) {
       return res.status(400).json({ error: 'Missing order data' });
     }
 
-    await resend.emails.send({
-      from: 'AMBAL Masala Podi <onboarding@resend.dev>',
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: { user: GMAIL_USER, pass: GMAIL_APP_PASSWORD }
+    });
+
+    await transporter.sendMail({
+      from: `AMBAL Masala Podi <${GMAIL_USER}>`,
       to: order.customerEmail,
       subject: `🎉 Order Confirmed — #${order.orderId} | Delivering Soon! | AMBAL Masala Podi`,
       html: confirmationEmail(order)

@@ -1,6 +1,7 @@
-const { Resend } = require('resend');
+const nodemailer = require('nodemailer');
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const GMAIL_USER = process.env.GMAIL_USER || 'nandhakumarpkr@gmail.com';
+const GMAIL_APP_PASSWORD = process.env.GMAIL_APP_PASSWORD;
 
 function followupEmail(order) {
   return `
@@ -113,8 +114,13 @@ module.exports = async function handler(req, res) {
 
     order.siteUrl = `https://${req.headers.host}`;
 
-    await resend.emails.send({
-      from: 'AMBAL Masala Podi <onboarding@resend.dev>',
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: { user: GMAIL_USER, pass: GMAIL_APP_PASSWORD }
+    });
+
+    await transporter.sendMail({
+      from: `AMBAL Masala Podi <${GMAIL_USER}>`,
       to: order.customerEmail,
       subject: `⭐ How was your AMBAL Masala? Share your review & get 10% OFF! 🎁`,
       html: followupEmail(order)
