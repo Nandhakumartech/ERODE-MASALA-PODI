@@ -1,22 +1,19 @@
 {
-  "buildCommand": "",
-  "outputDirectory": "public",
-  "framework": null,
-  "functions": {
-    "api/*.js": {
-      "memory": 256,
-      "maxDuration": 10
-    }
-  },
+  "version": 2,
+  "builds": [
+    { "src": "public/**", "use": "@vercel/static" },
+    { "src": "api/*.js", "use": "@vercel/node" }
+  ],
+  "routes": [
+    { "src": "/api/(.*)", "dest": "/api/$1" },
+    { "src": "/admin.html", "dest": "/public/admin.html" },
+    { "src": "/admin", "dest": "/public/admin.html" },
+    { "src": "/(.*)", "dest": "/public/$1" }
+  ],
   "crons": [
     {
       "path": "/api/cron-followup",
       "schedule": "0 9 * * *"
     }
-  ],
-  "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api/$1" },
-    { "source": "/admin.html", "destination": "/admin.html" },
-    { "source": "/admin", "destination": "/admin.html" }
   ]
 }

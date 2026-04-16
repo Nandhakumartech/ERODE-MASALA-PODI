@@ -242,16 +242,21 @@
           </div>
           <div class="order-actions">
             ${o.status === 'pending' ? `<button class="btn-accept" onclick="acceptOrder('${o.id}')">✅ Accept Order</button>` : ''}
-            <a class="btn-wa" href="https://wa.me/91${o.phone}?text=${waText}" target="_blank">📱 WhatsApp</a>
+            <a class="btn-wa" href="https://wa.me/91${cleanPhone(o.phone)}?text=${waText}" target="_blank">📱 WhatsApp</a>
           </div>
         </div>`;
       }).join('');
     }
 
+    function cleanPhone(p) {
+      if (!p) return '';
+      return p.replace(/[\s\-\+]/g, '').replace(/^91/, '');
+    }
+
     // Accept order
     async function acceptOrder(docId) {
       const order = allOrders.find(o => o.id === docId);
-      if (!order) return;
+      if (!order) { alert('Order not found'); return; }
 
       const btn = event.target;
       btn.disabled = true;
@@ -265,7 +270,7 @@
         });
 
         // Send confirmation email
-        await fetch('/api/send-confirmation', {
+        const emailRes = await fetch('/api/send-confirmation', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -274,13 +279,27 @@
             customerEmail: order.customerEmail,
             phone: order.phone,
             address: order.address,
-            items: order.items,
-            subtotal: order.subtotal,
-            discount: order.discount,
-            delivery: order.delivery,
-            total: order.total
+            items: order.items || [],
+            subtotal: order.subtotal || 0,
+            discount: order.discount || 0,
+            delivery: order.delivery || 0,
+            total: order.total || 0
           })
         });
+        const emailResult = await emailRes.json();
+        if (!emailRes.ok) console.error('Email error:', emailResult);
+
+        // Open WhatsApp to customer
+        const cp = cleanPhone(order.phone);
+        if (cp) {
+          const waMsg = encodeURIComponent(
+            `Hi ${order.customerName}! Your AMBAL Masala Podi order #${order.orderId} has been confirmed! ✅\n\n` +
+            `📦 Your order will be packed and dispatched within 24 hours.\n` +
+            `🚚 Tracking details will be shared soon.\n\n` +
+            `Thank you for choosing AMBAL Masala Podi! 🌶️`
+          );
+          window.open(`https://wa.me/91${cp}?text=${waMsg}`, '_blank');
+        }
 
         // Schedule 14-day follow-up (store in Firestore)
         const followupDate = new Date();
