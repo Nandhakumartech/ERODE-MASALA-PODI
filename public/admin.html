@@ -250,7 +250,9 @@
 
     function cleanPhone(p) {
       if (!p) return '';
-      return p.replace(/[\s\-\+]/g, '').replace(/^91/, '');
+      let num = p.replace(/[\s\-\+\(\)]/g, '');
+      if (num.startsWith('91') && num.length > 10) num = num.substring(2);
+      return num;
     }
 
     // Accept order
@@ -270,35 +272,46 @@
         });
 
         // Send confirmation email
-        const emailRes = await fetch('/api/send-confirmation', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            orderId: order.orderId,
-            customerName: order.customerName,
-            customerEmail: order.customerEmail,
-            phone: order.phone,
-            address: order.address,
-            items: order.items || [],
-            subtotal: order.subtotal || 0,
-            discount: order.discount || 0,
-            delivery: order.delivery || 0,
-            total: order.total || 0
-          })
-        });
-        const emailResult = await emailRes.json();
-        if (!emailRes.ok) console.error('Email error:', emailResult);
+        let emailOk = false;
+        try {
+          const emailRes = await fetch('/api/send-confirmation', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              orderId: order.orderId,
+              customerName: order.customerName,
+              customerEmail: order.customerEmail,
+              phone: order.phone,
+              address: order.address,
+              items: order.items || [],
+              subtotal: order.subtotal || 0,
+              discount: order.discount || 0,
+              delivery: order.delivery || 0,
+              total: order.total || 0
+            })
+          });
+          const emailResult = await emailRes.json();
+          if (emailRes.ok) {
+            emailOk = true;
+          } else {
+            alert('Email API error: ' + JSON.stringify(emailResult));
+          }
+        } catch (emailErr) {
+          alert('Email fetch failed: ' + emailErr.message + '. Check if API route /api/send-confirmation exists.');
+        }
 
         // Open WhatsApp to customer
         const cp = cleanPhone(order.phone);
-        if (cp) {
+        if (cp && cp.length === 10) {
           const waMsg = encodeURIComponent(
-            `Hi ${order.customerName}! Your AMBAL Masala Podi order #${order.orderId} has been confirmed! ✅\n\n` +
-            `📦 Your order will be packed and dispatched within 24 hours.\n` +
-            `🚚 Tracking details will be shared soon.\n\n` +
-            `Thank you for choosing AMBAL Masala Podi! 🌶️`
+            'Hi ' + order.customerName + '! Your AMBAL Masala Podi order #' + order.orderId + ' has been confirmed! ✅\n\n' +
+            '📦 Your order will be packed and dispatched within 24 hours.\n' +
+            '🚚 Tracking details will be shared soon.\n\n' +
+            'Thank you for choosing AMBAL Masala Podi! 🌶️'
           );
-          window.open(`https://wa.me/91${cp}?text=${waMsg}`, '_blank');
+          window.open('https://wa.me/91' + cp + '?text=' + waMsg, '_blank');
+        } else {
+          alert('WhatsApp: Invalid phone number "' + order.phone + '" (cleaned: "' + cp + '"). Need 10 digits.');
         }
 
         // Schedule 14-day follow-up (store in Firestore)
@@ -312,7 +325,7 @@
           sent: false
         });
 
-        alert('Order confirmed! Confirmation email sent to ' + order.customerEmail);
+        alert('Order confirmed!' + (emailOk ? ' Email sent to ' + order.customerEmail : ' Email failed — check Resend API key.'));
       } catch (err) {
         alert('Error: ' + err.message);
         btn.disabled = false;
