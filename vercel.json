@@ -1,14 +1,18 @@
 {
   "version": 2,
   "builds": [
-    { "src": "public/**", "use": "@vercel/static" },
-    { "src": "api/*.js", "use": "@vercel/node" }
+    { "src": "api/**/*.js", "use": "@vercel/node" },
+    { "src": "public/**", "use": "@vercel/static" }
   ],
   "routes": [
-    { "src": "/api/(.*)", "dest": "/api/$1" },
-    { "src": "/admin.html", "dest": "/public/admin.html" },
-    { "src": "/admin", "dest": "/public/admin.html" },
-    { "src": "/(.*)", "dest": "/public/$1" }
+    { "src": "/api/test", "dest": "api/test.js" },
+    { "src": "/api/send-acknowledgment", "dest": "api/send-acknowledgment.js" },
+    { "src": "/api/send-confirmation", "dest": "api/send-confirmation.js" },
+    { "src": "/api/send-followup", "dest": "api/send-followup.js" },
+    { "src": "/api/cron-followup", "dest": "api/cron-followup.js" },
+    { "src": "/admin.html", "dest": "public/admin.html" },
+    { "src": "/admin", "dest": "public/admin.html" },
+    { "src": "/(.*)", "dest": "public/$1" }
   ],
   "crons": [
     {
