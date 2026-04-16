@@ -1545,50 +1545,165 @@
       padding: clamp(60px, 8vw, 100px) clamp(12px, 3vw, 40px)
     }
 
-    .rev-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: clamp(14px, 2vw, 24px);
-      max-width: 1200px;
-      margin: clamp(30px, 4vw, 50px) auto 0
+    .rev-container {
+      max-width: 700px;
+      margin: clamp(24px, 4vw, 40px) auto 0;
+      background: #fff;
+      border: 2px solid var(--ered);
+      border-radius: 8px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      height: 520px;
+      box-shadow: 0 8px 30px rgba(139, 26, 26, .08)
+    }
+
+    .rev-header {
+      background: var(--ered);
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0
+    }
+
+    .rev-header-left {
+      display: flex;
+      align-items: center;
+      gap: 10px
+    }
+
+    .rev-total {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1rem, 1.8vw, 1.2rem);
+      font-weight: 800;
+      color: #fff
+    }
+
+    .rev-total-count {
+      background: var(--eyel);
+      color: var(--dark);
+      font-size: clamp(.6rem, 1vw, .7rem);
+      font-weight: 800;
+      padding: 3px 10px;
+      border-radius: 20px
+    }
+
+    .rev-avg {
+      color: var(--eyel);
+      font-size: clamp(.7rem, 1.1vw, .8rem);
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 4px
+    }
+
+    .rev-tabs {
+      display: flex;
+      flex-shrink: 0;
+      border-bottom: 2px solid rgba(0, 0, 0, .06)
+    }
+
+    .rev-tab {
+      flex: 1;
+      padding: 12px 16px;
+      background: #fff;
+      border: none;
+      font-weight: 700;
+      font-size: clamp(.7rem, 1.1vw, .8rem);
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: #999;
+      cursor: pointer;
+      transition: all .2s;
+      position: relative;
+      min-height: 44px
+    }
+
+    .rev-tab.active {
+      color: var(--ered);
+      background: var(--cream)
+    }
+
+    .rev-tab.active::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--ered)
+    }
+
+    .rev-tab-count {
+      font-size: clamp(.55rem, .9vw, .62rem);
+      background: rgba(0, 0, 0, .08);
+      padding: 2px 6px;
+      border-radius: 10px;
+      margin-left: 4px
+    }
+
+    .rev-tab.active .rev-tab-count {
+      background: rgba(212, 43, 43, .12);
+      color: var(--ered)
+    }
+
+    .rev-scroll {
+      flex: 1;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      background: var(--cream)
+    }
+
+    .rev-scroll::-webkit-scrollbar {
+      width: 4px
+    }
+
+    .rev-scroll::-webkit-scrollbar-thumb {
+      background: var(--ered);
+      border-radius: 4px
+    }
+
+    .rev-empty {
+      text-align: center;
+      padding: 40px 16px;
+      color: #bbb;
+      font-size: clamp(.8rem, 1.2vw, .9rem)
     }
 
     .rc {
       background: #fff;
       border: 1px solid rgba(0, 0, 0, .06);
+      border-radius: 6px;
       overflow: hidden;
-      transition: transform .2s
+      transition: transform .2s;
+      flex-shrink: 0
     }
 
     .rc:active {
       transform: scale(.99)
     }
 
-    .rc-img {
-      height: clamp(100px, 15vw, 140px);
-      background: var(--light-gold);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: clamp(2rem, 4vw, 3.5rem)
-    }
-
     .rc-body {
-      padding: clamp(14px, 2.5vw, 24px)
+      padding: clamp(12px, 2vw, 18px)
     }
 
     .rc-stars {
       color: var(--turmeric);
       font-size: clamp(.8rem, 1.2vw, .9rem);
       letter-spacing: 2px;
-      margin-bottom: 8px
+      margin-bottom: 6px
     }
 
     .rc-text {
       font-size: clamp(.78rem, 1.2vw, .85rem);
       line-height: 1.65;
       color: #555;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
       font-style: italic
     }
 
@@ -1599,8 +1714,8 @@
     }
 
     .rc-av {
-      width: clamp(30px, 4vw, 36px);
-      height: clamp(30px, 4vw, 36px);
+      width: clamp(32px, 4vw, 38px);
+      height: clamp(32px, 4vw, 38px);
       border-radius: 50%;
       background: var(--ered);
       display: flex;
@@ -1618,12 +1733,21 @@
     }
 
     .rc-loc {
-      font-size: clamp(.65rem, 1vw, .72rem);
-      color: #999
+      font-size: clamp(.62rem, .95vw, .7rem);
+      color: var(--ered);
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 3px
+    }
+
+    .rc-loc-pin {
+      color: var(--ered);
+      font-size: clamp(.7rem, 1vw, .8rem)
     }
 
     .rc-email {
-      font-size: clamp(.58rem, .9vw, .65rem);
+      font-size: clamp(.56rem, .85vw, .63rem);
       color: #aaa;
       word-break: break-all
     }
@@ -1635,8 +1759,8 @@
     }
 
     .rc-imgs img {
-      width: clamp(60px, 12vw, 100px);
-      height: clamp(60px, 12vw, 100px);
+      width: clamp(55px, 10vw, 80px);
+      height: clamp(55px, 10vw, 80px);
       object-fit: cover;
       border-radius: 4px;
       border: 1px solid rgba(0, 0, 0, .08);
@@ -1651,7 +1775,7 @@
     .rc-date {
       font-size: clamp(.55rem, .85vw, .62rem);
       color: #bbb;
-      margin-top: 6px
+      margin-top: 4px
     }
 
     /* ============ WRITE REVIEW ============ */
@@ -1767,6 +1891,23 @@
 
     .wr-star.active {
       color: var(--turmeric)
+    }
+
+    .wr-input {
+      width: 100%;
+      border: 1.5px solid #ddd;
+      padding: 12px;
+      font-size: clamp(.8rem, 1.2vw, .88rem);
+      outline: none;
+      font-family: inherit
+    }
+
+    .wr-input:focus {
+      border-color: var(--ered)
+    }
+
+    .wr-input::placeholder {
+      color: #bbb
     }
 
     .wr-textarea {
@@ -2040,8 +2181,9 @@
         grid-column: 1/-1
       }
 
-      .rev-grid {
-        grid-template-columns: repeat(2, 1fr)
+      .rev-container {
+        max-width: 800px;
+        height: 560px
       }
 
       .ft-inner {
@@ -2247,8 +2389,13 @@
         grid-template-columns: repeat(4, 1fr)
       }
 
-      .rev-grid {
-        grid-template-columns: repeat(3, 1fr)
+      .rev-container {
+        max-width: 900px;
+        height: 600px
+      }
+
+      .wr {
+        max-width: 700px
       }
 
       .ft-inner {
@@ -2624,7 +2771,29 @@
       <h2 class="sh-title">What People Say</h2>
       <div class="sh-line"></div>
     </div>
-    <div class="rev-grid" id="revGrid"></div>
+
+    <!-- Review Phone-Style Container -->
+    <div class="rev-container" id="revContainer">
+      <!-- Header with total count -->
+      <div class="rev-header">
+        <div class="rev-header-left">
+          <div class="rev-total">Reviews</div>
+          <span class="rev-total-count" id="revTotalCount">0</span>
+        </div>
+        <div class="rev-avg" id="revAvg">★ 0.0</div>
+      </div>
+
+      <!-- Tabs: Top Reviews / Latest -->
+      <div class="rev-tabs">
+        <button class="rev-tab active" id="tabTop" onclick="switchRevTab('top')">⭐ Top Reviews <span class="rev-tab-count" id="tabTopCount">0</span></button>
+        <button class="rev-tab" id="tabLatest" onclick="switchRevTab('latest')">🕐 Latest <span class="rev-tab-count" id="tabLatestCount">0</span></button>
+      </div>
+
+      <!-- Scrollable Reviews Area -->
+      <div class="rev-scroll" id="revScroll">
+        <div class="rev-empty" id="revEmpty">No reviews yet. Be the first to share your experience!</div>
+      </div>
+    </div>
 
     <!-- WRITE A REVIEW -->
     <div class="wr" id="wrBox">
@@ -2659,6 +2828,7 @@
           <button type="button" class="wr-star" onclick="setRating(4)">★</button>
           <button type="button" class="wr-star" onclick="setRating(5)">★</button>
         </div>
+        <input class="wr-input" type="text" id="wrArea" placeholder="📍 Your area / city (e.g. Erode, Chennai...)" required>
         <textarea class="wr-textarea" id="wrText" placeholder="Share your experience with our masala podis..." required></textarea>
         <div class="wr-imgs">
           <label class="wr-img-btn" id="wrImg1">
@@ -2783,43 +2953,117 @@
       </div>
     </div>`).join('');
     }
+    /* ===== REVIEWS: STATE & LOGIC ===== */
+    let allReviews = [];
+    let currentTab = 'top';
+    const POSITIVE_WORDS = ['amazing','awesome','best','brilliant','delicious','excellent','fantastic','fresh','genuine','good','great','incredible','love','loved','natural','outstanding','perfect','quality','recommend','superb','tasty','wonderful','divine','authentic','favourite','favorite','unbeatable','nutrition','nutritious','aromatic','beautiful','happy','satisfied'];
+
+    function isPositiveReview(text) {
+      const lower = text.toLowerCase();
+      return POSITIVE_WORDS.some(w => lower.includes(w));
+    }
+
+    function buildReviewCard(r) {
+      const stars = '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating);
+      const initials = r.name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+      const imgs = (r.images || []).map(url => `<img src="${url}" alt="Review photo" onclick="window.open('${url}','_blank')">`).join('');
+      const date = r.date || '';
+      const loc = r.area || r.location || '';
+      const email = r.email || '';
+      return `<div class="rc">
+        <div class="rc-body">
+          <div class="rc-stars">${stars}</div>
+          <div class="rc-text">"${r.text}"</div>
+          ${imgs ? `<div class="rc-imgs">${imgs}</div>` : ''}
+          <div class="rc-author">
+            <div class="rc-av">${initials}</div>
+            <div>
+              <div class="rc-name">${r.name}</div>
+              ${email ? `<div class="rc-email">${email}</div>` : ''}
+              ${loc ? `<div class="rc-loc"><span class="rc-loc-pin">📍</span>${loc}</div>` : ''}
+              ${date ? `<div class="rc-date">${date}</div>` : ''}
+            </div>
+          </div>
+        </div>
+      </div>`;
+    }
+
+    function getTopReviews() {
+      return allReviews.filter(r => r.rating >= 4 && isPositiveReview(r.text)).sort((a, b) => b.rating - a.rating || (b.ts || 0) - (a.ts || 0));
+    }
+
+    function getLatestReviews() {
+      return [...allReviews].sort((a, b) => (b.ts || 0) - (a.ts || 0));
+    }
+
+    function displayReviews(tab) {
+      const scroll = document.getElementById('revScroll');
+      const empty = document.getElementById('revEmpty');
+      const list = tab === 'top' ? getTopReviews() : getLatestReviews();
+      if (list.length === 0) {
+        scroll.innerHTML = '';
+        scroll.appendChild(empty);
+        empty.style.display = 'block';
+        empty.textContent = tab === 'top' ? 'No top reviews yet. Post a 4-5 star review!' : 'No reviews yet. Be the first!';
+        return;
+      }
+      empty.style.display = 'none';
+      scroll.innerHTML = list.map(buildReviewCard).join('');
+    }
+
+    function updateRevCounts() {
+      const top = getTopReviews().length;
+      const latest = allReviews.length;
+      const avg = latest > 0 ? (allReviews.reduce((s, r) => s + r.rating, 0) / latest).toFixed(1) : '0.0';
+      document.getElementById('revTotalCount').textContent = latest;
+      document.getElementById('tabTopCount').textContent = top;
+      document.getElementById('tabLatestCount').textContent = latest;
+      document.getElementById('revAvg').innerHTML = `★ ${avg}`;
+    }
+
+    function switchRevTab(tab) {
+      currentTab = tab;
+      document.getElementById('tabTop').classList.toggle('active', tab === 'top');
+      document.getElementById('tabLatest').classList.toggle('active', tab === 'latest');
+      displayReviews(tab);
+    }
+
     function renderR() {
-      /* Render static/default reviews */
-      const staticHTML = R.map(r => `
-    <div class="rc reveal"><div class="rc-img">${r.img}</div><div class="rc-body"><div class="rc-stars">${'★'.repeat(r.s)}</div><div class="rc-text">${r.t}</div><div class="rc-author"><div class="rc-av">${r.i}</div><div><div class="rc-name">${r.n}</div><div class="rc-loc">📍 ${r.l}</div></div></div></div></div>`).join('');
-      document.getElementById('revGrid').innerHTML = staticHTML;
+      allReviews = [];
+      /* Add static default reviews */
+      R.forEach(r => {
+        allReviews.push({
+          name: r.n, text: r.t, rating: r.s, area: r.l,
+          email: '', images: [], date: '', ts: 0, source: 'static'
+        });
+      });
       /* Load Firestore reviews */
       loadFirebaseReviews();
     }
 
     function loadFirebaseReviews() {
       db.collection('reviews').orderBy('createdAt', 'desc').get().then(snap => {
-        const grid = document.getElementById('revGrid');
         snap.forEach(doc => {
           const r = doc.data();
-          const stars = '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating);
-          const initials = r.name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
-          const imgs = (r.images || []).map(url => `<img src="${url}" alt="Review photo" onclick="window.open('${url}','_blank')">`).join('');
           const date = r.createdAt ? new Date(r.createdAt.seconds * 1000).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : '';
-          const div = document.createElement('div');
-          div.className = 'rc reveal';
-          div.innerHTML = `
-            <div class="rc-body">
-              <div class="rc-stars">${stars}</div>
-              <div class="rc-text">"${r.text}"</div>
-              ${imgs ? `<div class="rc-imgs">${imgs}</div>` : ''}
-              <div class="rc-author">
-                <div class="rc-av">${initials}</div>
-                <div>
-                  <div class="rc-name">${r.name}</div>
-                  <div class="rc-email">${r.email}</div>
-                  ${date ? `<div class="rc-date">${date}</div>` : ''}
-                </div>
-              </div>
-            </div>`;
-          grid.prepend(div);
+          const ts = r.createdAt ? r.createdAt.seconds : 0;
+          allReviews.push({
+            name: r.name || 'Anonymous',
+            text: r.text,
+            rating: r.rating,
+            area: r.area || '',
+            email: r.email || '',
+            images: r.images || [],
+            date: date,
+            ts: ts,
+            source: 'firebase'
+          });
         });
-        document.querySelectorAll('.reveal').forEach(el => { if (el.getBoundingClientRect().top < window.innerHeight - 40) el.classList.add('vis') });
+        updateRevCounts();
+        displayReviews(currentTab);
+      }).catch(err => {
+        updateRevCounts();
+        displayReviews(currentTab);
       });
     }
 
@@ -2887,6 +3131,8 @@
       if (reviewRating === 0) { toast('Please select a star rating'); return; }
       const text = document.getElementById('wrText').value.trim();
       if (!text) { toast('Please write your review'); return; }
+      const area = document.getElementById('wrArea').value.trim();
+      if (!area) { toast('Please enter your area / city'); return; }
 
       const btn = document.getElementById('wrSubmit');
       btn.disabled = true;
@@ -2905,6 +3151,7 @@
           uid: user.uid,
           rating: reviewRating,
           text: text,
+          area: area,
           images: images,
           createdAt: firebase.firestore.FieldValue.serverTimestamp()
         });
